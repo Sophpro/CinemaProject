@@ -44,7 +44,7 @@ body {font-family:Verdana, Arial, sans-serif;
     align-items: center; 
 }
 .document ul li a:hover{
-    border-bottom: 2px solid #828282;
+    border-bottom: 2px solid #5b5b6b;
     color: #828282;
 }
 .document ul li a:active{
@@ -76,7 +76,7 @@ body {font-family:Verdana, Arial, sans-serif;
     top:0;
     right:0;
 }
-.logbutton{background-color: #636363;
+.logbutton{background-color: #5b5b6b;
     border-radius:25px;
     width:90px;
     height: 40px;
@@ -88,7 +88,7 @@ body {font-family:Verdana, Arial, sans-serif;
     font-size: 20px;
     color: #FFFFFF;
 }
-.main{padding-top: 60px;}
+
 footer {  background-color: #2F2F2F;
     font-size:70%;
     text-align: center;
@@ -99,3 +99,80 @@ footer {  background-color: #2F2F2F;
 footer a { color:#FFFFFF;
 }
 footer img { border-radius:8px;}
+
+/*booking page*/
+.main{padding-top: 80px;
+} 
+.main-right{
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+.movie_container #movie {
+margin-left: 10px;
+padding: 5px 15px;
+font-size: 14px;
+border-radius: 5px;
+appearance: none;
+}
+.showcase {
+margin: 16PX;
+padding: 5px 10px;
+display: flex;
+/* justify-content: space-between; */
+background: 0, 0, 0, 0.1;
+}
+.showcase li {
+margin: 10px;
+display: flex;
+font-size: 14px;
+}
+.seat {
+background-color: #5b5b6b;
+height: 12px;
+width: 15px;
+margin: 3px;
+border-top-left-radius: 10px;
+border-top-right-radius: 10px;
+}
+.seat.selected {
+background-color: #6feaf6;
+}
+.seat.occupied {
+background-color: #FFF;
+}
+.container {
+perspective: 1000px;
+}
+.container .screen {
+width: 200px;
+height: 70px;
+margin: 15px;
+background-color: #ffffff;
+transform: perspective(25px) rotateX(-3deg);
+box-shadow: 0 3px 10px rgba(255, 255, 255, 0.7);
+}
+.container .row {
+display: flex;
+}
+.container .row .seat {
+transition: all 0.2s;
+}
+.container .row .seat:nth-child(2),
+.container .row .seat:nth-child(8) {
+margin-right: 15px;
+}
+.container .row .seat:not(.occupied):hover {
+transform: scale(1.2);
+cursor: pointer;
+}
+.container p {
+margin: 30px 0px;
+font-size: 14px;
+}
+.container p span {
+color: #6feaf6;
+}
