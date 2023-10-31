@@ -1,5 +1,27 @@
 SET time_zone = "+00:00";
 
+CREATE TABLE IF NOT EXISTS promotions 
+( id int unsigned not null auto_increment primary key,
+  title varchar(255) NOT NULL,
+  description varchar(1000) NOT NULL,
+  discount float(10,4) NOT NULL,
+  code varchar(255)
+);
+INSERT INTO promotions VALUES
+(1, 'New User Carnival', 'Thank you for joining MZ Cinema! We would like to offer a great 10% discount for all new users. Please find the Promotion Code in your email inbox and "Zoom" to a movie NOW!', '0.9', 'MZCINEMA'),
+(2, 'MZ at Boonlay', 'Our latest branch at Boonlay is open now! All the movies onging in MZ Boonlay is enjoying a 5% discount (already shown in price at booking)!', '0.95', Null);
+
+CREATE TABLE IF NOT EXISTS dining 
+( id int unsigned not null auto_increment primary key,
+  name varchar(50) NOT NULL,
+  description varchar(1000) NOT NULL,
+  price float(10,2) NOT NULL
+);
+INSERT INTO dining VALUES
+(1, 'Popcorn', 'Popcorn is the best companion for movies!', '5'),
+(2, 'Fried Chicken', 'Highly acclaimed juicy fried chicken!', '10'),
+(3, 'Coca Cola', 'Coca Cola is the best heat relieving item!', '3');
+
 CREATE TABLE IF NOT EXISTS users 
 ( id int unsigned not null auto_increment primary key,
   username varchar(50) NOT NULL,
@@ -30,7 +52,8 @@ create table IF NOT EXISTS orders
 ( id int unsigned not null auto_increment primary key,
   user_id int(8) NOT NULL,
   movsession_id int(8) NOT NULL,
-  timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  subtotal float(10,2) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS movies 
@@ -38,7 +61,7 @@ CREATE TABLE IF NOT EXISTS movies
   movie_name varchar(255) NOT NULL,
   star int(8) not null,
   genre1 varchar(255) NOT NULL,
-  genre2 varchar(255) NOT NULL,
+  genre2 varchar(255),
   runtime varchar(255) NOT NULL,
   language varchar(255) NOT NULL,
   actor varchar(255) NOT NULL,
@@ -54,7 +77,7 @@ INSERT INTO movies VALUES
 (5, "Tastes Of Horror", '4', 'Horror', 'Supernatural', '118 minutes', 'Korean', 'Lee Joo-young, Jang Gwang, Jo Jae-yun, Kim Joo-ryong, Yoon Hyun-min, Chang Seung-yeon, Oh Seung-hee, Jang Ye-eun', "An omnibus of 6 chilling stories, based on a widely popular web-comic that suit each's horror palette.", '/movies/5.jpg'),
 (6, "The Ex-Files 4: Marriage Plan 前任4: 英年早婚", '4', 'Comedy', 'Romance', '129 minutes', 'Mandarin', 'Han Geng, Zheng Kai', "The immensely popular EX-FILE franchise now comes to its fourth sequel in which we see buddies Meng Yun and Yu Fei coming to an age to talk about marriage. In order to avoid problems after marriage, Yu and his girlfriend Ding Dian create a marriage cooling-off period to preview life after marriage in advance. Changes in friends around and pressure from parents are getting to make Meng think about marriage. At an unexpected alumni gathering, Meng reunites with his first love. After many years, his heart is still pounding at the sight of her. He seems to finally catch a glimmer of hope, but would this girl really be the chosen one?", '/movies/6.jpg'),
 (7, "Killers Of The Flower Moon", '4', 'Crime', 'Drama', '206 minutes', 'English', 'Leonardo DiCaprio, Robert De Niro, Lily Gladstone', "Members of the Osage tribe in the United States are murdered under mysterious circumstances in the 1920s, sparking a major F.B.I. investigation involving J. Edgar Hoover.", '/movies/7.jpg'),
-(8, "No More Bets 孤注一掷", '4', 'Crime', 'Crime', '130 minutes', 'Mandarin', 'Yixing Zhang, Gina Chen Jin, Chuanjun Wang, Mei Yong, Darren Wang, Sunny Sun, Zhou Ye', "The film is based on tens of thousands of real fraud cases, and the horrifying inside story of the entire industry chain of overseas cyber fraud. Programmer Pan Sheng and model Anna were attracted by an overseas recruitment ad and went abroad to seek wealth, but they were scammed and ended up working in a factory. In order to leave, the two are going to attack the gambler Ah Tian and his girlfriend Xiao Yu, take their money, and complete their business... Can Pan Sheng and Anna escape from the cruel leaders of the fraud group, Manager Lu and Ah Cai? Facing cross-border investigations and pursuit of the police, where can they escape to?", '/movies/8.jpg');
+(8, "No More Bets 孤注一掷", '4', 'Crime', 'Drama', '130 minutes', 'Mandarin', 'Yixing Zhang, Gina Chen Jin, Chuanjun Wang, Mei Yong, Darren Wang, Sunny Sun, Zhou Ye', "The film is based on tens of thousands of real fraud cases, and the horrifying inside story of the entire industry chain of overseas cyber fraud. Programmer Pan Sheng and model Anna were attracted by an overseas recruitment ad and went abroad to seek wealth, but they were scammed and ended up working in a factory. In order to leave, the two are going to attack the gambler Ah Tian and his girlfriend Xiao Yu, take their money, and complete their business... Can Pan Sheng and Anna escape from the cruel leaders of the fraud group, Manager Lu and Ah Cai? Facing cross-border investigations and pursuit of the police, where can they escape to?", '/movies/8.jpg');
 
 CREATE TABLE IF NOT EXISTS movsessions 
 ( id int unsigned not null auto_increment primary key,
@@ -63,7 +86,7 @@ CREATE TABLE IF NOT EXISTS movsessions
   hall int(2) NOT NULL,
   date date not null,
   time time NOT NULL,
-  price float(10,2),
+  price float(10,2) NOT NULL,
   status varchar(255) NOT NULL,
   seat_id int(8) NOT NULL
 );
