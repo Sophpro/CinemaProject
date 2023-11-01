@@ -117,28 +117,35 @@
                       $session = $sessions->fetch_assoc();
                       switch ($session['cinema_id']) {
                         case '1':
-                          if (strpos('MZ Marina', $cinemas) === false){
+                          if (strpos($cinemas, 'MZ Marina') === false){
+                            if ($j != '0'){
+                              $cinemas = $cinemas.', ';
+                            }
                             $cinemas = $cinemas.'MZ Marina';}
                           break;
                         case '2':
-                          if (strpos('MZ Downtown', $cinemas) === false){
+                          if (strpos($cinemas, 'MZ Downtown') === false){
+                            if ($j != '0'){
+                              $cinemas = $cinemas.', ';
+                            }
                             $cinemas = $cinemas.'MZ Downtown';}
                           break;
                         case '3':
-                          if (strpos('MZ Boonlay', $cinemas) === false){
+                          if (strpos($cinemas, 'MZ Boonlay') === false){
+                            if ($j != '0'){
+                              $cinemas = $cinemas.', ';
+                            }
                             $cinemas = $cinemas.'MZ Boonlay';}
                           break;
                         default:
                             echo "Error in sessions of movie: ".$row['movie_name'];
                         }
-                      if ($j != $no_sessions-1){
-                        $cinemas = $cinemas.', ';
-                      }
-                      if (strpos($session['date'], $dates) === false){
-                        $dates = $dates.$session['date'];}
-                      if ($j != $no_sessions-1){
-                        $dates = $dates.', ';
-                      }
+                        if (strpos($dates, $session['date']) == false){
+                          if ($j != '0'){
+                            $dates = $dates.', ';
+                          }
+                          $dates = $dates.$session['date'];
+                        }
                     }
 
                     echo '

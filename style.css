@@ -1,3 +1,4 @@
+/*---------------------Overall-------------------------*/
 body {font-family:Verdana, Arial, sans-serif;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -104,7 +105,8 @@ footer img { border-radius:8px;}
     min-height: 500px;
 } 
 
-/*home page*/
+/*---------------------Home page-------------------------*/
+/*Banner*/
 .topBanner {
     overflow: hidden;
     height: 400px;
@@ -133,7 +135,7 @@ footer img { border-radius:8px;}
         left: 0;
     }
     100% {
-        left: -800px; /* Adjust this value based on the total width of your images */
+        left: -800px;
     }
 }
 .midView{
@@ -142,8 +144,9 @@ footer img { border-radius:8px;}
     min-width:850px;
     margin: 20px 5px;
 }
+
+/*Left filter*/
 .leftcolumn { 
-    /* display: inline-block; */
     float:left;
     width: 30%;
     text-align:center;
@@ -173,8 +176,9 @@ footer img { border-radius:8px;}
 #myGenre {
     width: 157px;
 }
+
+/*Right details*/
 .rightcolumn { 
-    /* display: inline-block; */
     height: auto;
     margin-left: 30%;
     width: 65%;
@@ -196,6 +200,7 @@ h2 {
     font-weight: 400px;
     letter-spacing: 1px;
     color: #AEAEAE;
+    font-size:15px;
 }
 .content{
     display:flex;
@@ -212,7 +217,7 @@ h2 {
 }
 .movie-card a{
     color: #FFFFFF;
-    text-decoration: none;    
+    text-decoration: none;
 }
 .movie-card:hover {
     transition: 300ms;
@@ -223,7 +228,93 @@ h2 {
     box-shadow:6px 6px 3px #2F2F2F;
 }
 
-/*booking page*/
+/*---------------------Movie page-------------------------*/
+/*Card*/
+.col-1{
+    width: 100%;
+}
+.movie-card-hori{
+    margin-right: 30px;
+    margin-bottom: 30px;
+    height:auto;
+}
+.movie-card-hori a{
+    color: #FFFFFF;
+    text-decoration: none;    
+}
+.movie-poster-left{
+    float: left;
+    width: 25%;
+    min-width: 200px;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.poster-left{
+    /* width: 150px; */
+    height: 250px;
+    box-shadow:6px 6px 3px #2F2F2F;
+    margin: auto;
+}
+.short-details-right{
+    margin-left: 30%;
+    min-height: 250px;
+}
+
+/*Cinema date time select*/
+.select-box{
+    width: 100%;
+    margin: 30px 20px;
+    color: #2F2F2F;
+}
+.cinema-select{
+    float:left;
+    width: 150px;
+    border-radius:10px;
+    margin-left: 20px;
+}
+.cinema-select-table{
+    background-color: #bbbbce;
+    width: 130px;
+    margin: auto;
+    border-radius:10px;
+}
+.cinema-select-table td { 
+    padding:10px 10px;
+    width:130px;
+    border-radius:10px;
+    height:30px;
+}
+.cinema_selected{
+    background-color:transparent;
+    border:0;
+    font-size:15px;
+}
+.cinema_selected:hover   {
+    cursor:Pointer;
+}
+.datetime-select{
+    background-color: #bbbbce;
+    border-radius:10px;
+    margin-left: 25%;
+    min-width: 500px;
+    min-height: 150px;
+
+}
+.datetime-select-table{
+    min-width: 500px;
+}
+.datetime-select-table td { 
+    padding:10px 20px;
+    border-radius:10px;
+}
+.datetime-select-table th { 
+    padding:15px 20px;
+}
+
+/*---------------------Booking page-------------------------*/
+/**/
 .main-right{
     height: auto;
     display: flex;
