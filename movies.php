@@ -7,11 +7,11 @@
 </head>
 <body>
 <script>
-    function clearSelection() {
+    function clearSelection() { //此处有1bug，从index page选择并进入movie page时不能clear
       document.getElementById('myName').value = "";
-      document.getElementById('myCinema').selectedIndex = 0;
+      document.getElementById('myCinema').value = "Null";
       document.getElementById('myDate').value = "";
-      document.getElementById('myGenre').selectedIndex = 0;
+      document.getElementById('myGenre').value = "Null";
     }
 </script>
 <div id="wrapper">
@@ -22,21 +22,21 @@
     <div class="document">
         <ul>
             <li><a href="index.php">Home</a></li>
-            <li><a href="#">Movies</a></li>
-            <li><a href="#">Cinemas</a></li>
-            <li><a href="#">Promotions</a></li>
-            <li><a href="#">Dining</a></li> 
-            <li><a href="#">Mine</a></li>
+            <li><a href="movies.php" class="active">Movies</a></li>
+            <li><a href="cinemas.php">Cinemas</a></li>
+            <li><a href="promotions.php">Promotions</a></li>
+            <li><a href="dining.php">Dining</a></li> 
+            <li><a href="mine.php">Mine</a></li>
         </ul>
     </div>
     <div class="top-right">
     <div class="log">
         <div class="logbutton">
-            <a href="#">Log in</a>
+            <a href="login.php">Log in</a>
         </div>
     </div>
     <div class="cart">
-        <a href="#"><img src="./img/cart.png" width="40" height="40"></a>
+        <a href="cart.php"><img src="./img/cart.png" width="40" height="40"></a>
     </div>
     </div>
   </div>
@@ -81,8 +81,8 @@
                       </select></td>
                 </tr>
                 <tr>
-                  <td align="center"><button type="button" onclick="clearSelection()">Clear</button></td>
-                  <td align="center"><input type="submit" value="Search"></td>
+                  <td align="center"><button class="filterbutton" onclick="clearSelection()" type="reset">Clear</button></td>
+                  <td align="center"><button class="filterbutton" type="submit">Search</button></td>
                 </tr>
               </table>
             </form>

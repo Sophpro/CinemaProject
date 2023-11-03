@@ -6,6 +6,14 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<script>
+    function clearSelection() {
+      document.getElementById('myName').value = "";
+      document.getElementById('myCinema').value = "Null";
+      document.getElementById('myDate').value = "";
+      document.getElementById('myGenre').value = "Null";
+    }
+</script>
 <div id="wrapper">
   <div class="top">
     <div class="logo">
@@ -13,7 +21,7 @@
     </div>
     <div class="document">
         <ul>
-            <li><a href="index.php">Home</a></li>
+            <li><a href="index.php" class="active">Home</a></li>
             <li><a href="movies.php">Movies</a></li>
             <li><a href="cinemas.php">Cinemas</a></li>
             <li><a href="promotions.php">Promotions</a></li>
@@ -86,8 +94,8 @@
                       </select></td>
                 </tr>
                 <tr>
-                  <td align="center"><input type="reset" value="Clear"></td>
-                  <td align="center"><input type="submit" value="Search"></td>
+                  <td align="center"><button class="filterbutton" onclick="clearSelection()" type="reset">Clear</button></td>
+                  <td align="center"><button class="filterbutton" type="submit">Search</button></td>
                 </tr>
               </table>
             </form>

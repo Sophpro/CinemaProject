@@ -49,9 +49,9 @@ body {font-family:Verdana, Arial, sans-serif;
     border-bottom: 2px solid #5b5b6b;
     color: #828282;
 }
-.document ul li a:active{
+.active{
     border-bottom: 2px solid #FFFFFF;
-    color: #828282;
+    color: #FFFFFF;
 }
 .top-right{width: 40%;
     min-width:200px;
@@ -159,7 +159,7 @@ footer img { border-radius:8px;}
     margin:auto;
 }
 #filtertable th { 
-    padding:10px 10px;
+    padding:20px 10px;
     font-size:30px;
 }
 #filtertable td { padding:10px 10px;
@@ -175,6 +175,20 @@ footer img { border-radius:8px;}
 }
 #myGenre {
     width: 157px;
+}
+.filterbutton{
+    margin: 10px 0px;
+    border:none;
+    background-color: #5b5b6b;
+    border-radius:15px;
+    width:70px;
+    height: 30px;
+    text-align: center;
+    font-size: 15px;
+    color: #FFFFFF;
+}
+.filterbutton:hover   {
+    cursor:Pointer;
 }
 
 /*Right details*/
@@ -395,3 +409,15 @@ font-size: 14px;
 .container p span {
 color: #6feaf6;
 }
+
+/*---------------------Cinema page-------------------------*/
+
+/*---------------------Promotions page-------------------------*/
+
+/*---------------------Dining page-------------------------*/
+
+/*---------------------Mine page-------------------------*/
+
+/*---------------------Cart page-------------------------*/
+
+/*---------------------Login page-------------------------*/
