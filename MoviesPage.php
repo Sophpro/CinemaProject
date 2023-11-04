@@ -199,7 +199,7 @@
                     $no_sessions = $sessions->num_rows;
                     $cinemas = 'Availabe Cinemas: ';
                     $dates = 'Availabe Dates: ';
-                    $cinematable = '<tr style="background:#ffffff" id="select_row'; //只显示有场次的cinema？tbc...
+                    $cinematable = '<tr style="background:#ffffff" id="select_row';
                     $table1 = '<tr><th colspan="100">Date and time choices at MZ Marina</th></tr>';
                     $table2 = '<tr><th colspan="100">Date and time choices at MZ Downtown</th></tr>';
                     $table3 = '<tr><th colspan="100">Date and time choices at MZ Boonlay</th></tr>';
@@ -221,19 +221,19 @@
                             if (substr($table1, strpos($table1, '</th></tr>')) === '</th></tr>'){
                               $table1=$table1.'<tr><td>'.$session['date'].'</td>';
                               if (strpos($table1, $session['time']) === false){
-                                $table1=$table1.'<td>'.$session['time'].'</td>';
+                                $table1=$table1.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                               }
                             }
                             else{
                               $table1=$table1.'</tr><tr><td>'.$session['date'].'</td>';
                               if (strpos($table1, $session['time']) === false){
-                                $table1=$table1.'<td>'.$session['time'].'</td>';
+                                $table1=$table1.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                               }
                             }
                           }
                           //如果这个date已经出现过，因为按date排序，所以这个time一定是同一天，直接加在后面
                           else if (strpos($table1, $session['time']) === false){
-                            $table1=$table1.'<td>'.$session['time'].'</td>';
+                            $table1=$table1.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                           }
                           break;
                         case '2':
@@ -246,18 +246,18 @@
                             if (substr($table2, strpos($table2, '</th></tr>')) === '</th></tr>'){
                               $table2=$table2.'<tr><td>'.$session['date'].'</td>';
                               if (strpos($table2, $session['time']) === false){
-                                $table2=$table2.'<td>'.$session['time'].'</td>';
+                                $table2=$table2.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                               }
                             }
                             else{
                               $table2=$table2.'</tr><tr><td>'.$session['date'].'</td>';
                               if (strpos($table2, $session['time']) === false){
-                                $table2=$table2.'<td>'.$session['time'].'</td>';
+                                $table2=$table2.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                               }
                             }
                           }
                           else if (strpos($table2, $session['time']) === false){
-                            $table2=$table2.'<td>'.$session['time'].'</td>';
+                            $table2=$table2.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                           }
                           break;
                         case '3':
@@ -270,18 +270,18 @@
                               if (substr($table3, strpos($table3, '</th></tr>')) === '</th></tr>'){
                                 $table3=$table3.'<tr><td>'.$session['date'].'</td>';
                                 if (strpos($table3, $session['time']) === false){
-                                  $table3=$table3.'<td>'.$session['time'].'</td>';
+                                  $table3=$table3.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                                 }
                               }
                               else{
                                 $table3=$table3.'</tr><tr><td>'.$session['date'].'</td>';
                                 if (strpos($table3, $session['time']) === false){
-                                  $table3=$table3.'<td>'.$session['time'].'</td>';
+                                  $table3=$table3.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                                 }
                               }
                             }
                             else if (strpos($table3, $session['time']) === false){
-                              $table3=$table3.'<td>'.$session['time'].'</td>';
+                              $table3=$table3.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                             }
                           break;
                         default:
@@ -297,6 +297,11 @@
                     
                     echo '
                         <div class="col-1">
+                        <form id="movieform'.$row['id'].'" method="post" action="BookingPage.php">
+                        <input name="movie-page-card" value="'.$row['id'].'" style="display: none;"/>
+                        <input id="movie-page-cinema-'.$row['id'].'" name="movie-page-cinema" value="" style="display: none;"/>
+                        <input id="movie-page-date-'.$row['id'].'" name="movie-page-date" value="" style="display: none;"/>
+                        <input id="movie-page-time-'.$row['id'].'" name="movie-page-time" value="" style="display: none;"/>
                             <div class="movie-card-hori">
                                 <div class="movie-poster-left">
                                     <img class="poster-left" alt="movie poster" src=".'.$row['picture_url'].'">
@@ -393,49 +398,55 @@
                     }
                     
                     echo '
-                                        
+                            </form>            
                               <script>
-                              function showTable_'.$row['id'].'(tableid){
-                                var selected = document.getElementById(tableid);
-                                var cinema1 = document.getElementById("tableMZMarina_'.$row['id'].'");
-                                var cinema2 = document.getElementById("tableMZDowntown_'.$row['id'].'");
-                                var cinema3 = document.getElementById("tableMZBoonlay_'.$row['id'].'");
-                                var row1 = document.getElementById("select_row1_'.$row['id'].'");
-                                var row2 = document.getElementById("select_row2_'.$row['id'].'");
-                                var row3 = document.getElementById("select_row3_'.$row['id'].'");
-                                if(selected.value=="MZ Marina"){
-                                  cinema1.style.display = "inline";
-                                  cinema2.style.display = "none";
-                                  cinema3.style.display = "none";
-                                  row1.style.background = "#ffffff";
-                                  row2.style.background = "#bbbbce";
-                                  row3.style.background = "#bbbbce";
-                                }
-                                else if (selected.value=="MZ Downtown"){
-                                  cinema2.style.display = "inline";
-                                  cinema1.style.display = "none";
-                                  cinema3.style.display = "none";	
-                                  row2.style.background = "#ffffff";
-                                  row1.style.background = "#bbbbce";
-                                  row3.style.background = "#bbbbce";	
-                                }
-                                else if (selected.value=="MZ Boonlay"){
-                                  cinema3.style.display = "inline";
-                                  cinema1.style.display = "none";
-                                  cinema2.style.display = "none";	
-                                  row3.style.background = "#ffffff";
-                                  row1.style.background = "#bbbbce";
-                                  row2.style.background = "#bbbbce";	
-                                }
-                                else{
-                                  cinema1.style.display = "inline";
-                                  cinema2.style.display = "none";
-                                  cinema3.style.display = "none";	
-                                  row1.style.background = "#ffffff";
-                                  row2.style.background = "#bbbbce";
-                                  row3.style.background = "#bbbbce";
-                                }
-                              }
+                                  function showTable_'.$row['id'].'(tableid){
+                                    var selected = document.getElementById(tableid);
+                                    var cinema1 = document.getElementById("tableMZMarina_'.$row['id'].'");
+                                    var cinema2 = document.getElementById("tableMZDowntown_'.$row['id'].'");
+                                    var cinema3 = document.getElementById("tableMZBoonlay_'.$row['id'].'");
+                                    var row1 = document.getElementById("select_row1_'.$row['id'].'");
+                                    var row2 = document.getElementById("select_row2_'.$row['id'].'");
+                                    var row3 = document.getElementById("select_row3_'.$row['id'].'");
+                                    if(selected.value=="MZ Marina"){
+                                      cinema1.style.display = "inline";
+                                      cinema2.style.display = "none";
+                                      cinema3.style.display = "none";
+                                      row1.style.background = "#ffffff";
+                                      row2.style.background = "#bbbbce";
+                                      row3.style.background = "#bbbbce";
+                                    }
+                                    else if (selected.value=="MZ Downtown"){
+                                      cinema2.style.display = "inline";
+                                      cinema1.style.display = "none";
+                                      cinema3.style.display = "none";	
+                                      row2.style.background = "#ffffff";
+                                      row1.style.background = "#bbbbce";
+                                      row3.style.background = "#bbbbce";	
+                                    }
+                                    else if (selected.value=="MZ Boonlay"){
+                                      cinema3.style.display = "inline";
+                                      cinema1.style.display = "none";
+                                      cinema2.style.display = "none";	
+                                      row3.style.background = "#ffffff";
+                                      row1.style.background = "#bbbbce";
+                                      row2.style.background = "#bbbbce";	
+                                    }
+                                    else{
+                                      cinema1.style.display = "inline";
+                                      cinema2.style.display = "none";
+                                      cinema3.style.display = "none";	
+                                      row1.style.background = "#ffffff";
+                                      row2.style.background = "#bbbbce";
+                                      row3.style.background = "#bbbbce";
+                                    }
+                                  }
+                                  function submitmovieForm'.$row['id'].'(cinema, date, time) {
+                                    document.getElementById("movie-page-cinema-'.$row['id'].'").value = cinema;
+                                    document.getElementById("movie-page-date-'.$row['id'].'").value = date;
+                                    document.getElementById("movie-page-time-'.$row['id'].'").value = time;
+                                    document.getElementById("movieform'.$row['id'].'").submit();
+                                  }
                               </script>
                         </div>
                     ';

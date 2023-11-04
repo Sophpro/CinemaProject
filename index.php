@@ -158,18 +158,26 @@
 
                     echo '
                         <div class="col-3">
-                            <div class="movie-card">
+                          <form id="movieform'.$row['id'].'" method="post" action="BookingPage.php">
+                            <input name="movie-card" value="'.$row['id'].'" style="display: none;"/>
+                            <div class="movie-card" onclick="submitmovieForm'.$row['id'].'()">
                                 <div class="movie-poster">
-                                    <a href="#"><img class="poster" alt="movie poster" src=".'.$row['picture_url'].'"></a>
+                                    <img class="poster" alt="movie poster" src=".'.$row['picture_url'].'">
                                 </div>
                                 <div class="short-details">
-                                    <p class="movie-name"><a href="#">'.$row['movie_name'].'</a></p>
+                                    <p class="movie-name"><a>'.$row['movie_name'].'</a></p>
                                     <p class="movie-description">'.$row['genre1'].', '.$row['genre2'].' | '.$row['runtime'].' | '.$row['language'].'</p>
                                     <p class="movie-description">'.$cinemas.'</p>
                                     <p class="movie-description">'.$dates.'</p>
                                 </div>
                             </div>
+                          </form>
                         </div>
+                        <script>
+                          function submitmovieForm'.$row['id'].'() {
+                            document.getElementById("movieform'.$row['id'].'").submit();
+                          }
+                        </script>
                     ';
                 }
               $db->close();

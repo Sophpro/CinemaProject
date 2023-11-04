@@ -236,6 +236,7 @@ h2 {
 .movie-card:hover {
     transition: 300ms;
     transform: scale(1.06);
+    cursor:Pointer;
 }
 .poster{
     width: 150px;
@@ -308,6 +309,11 @@ h2 {
 .cinema_selected:hover   {
     cursor:Pointer;
 }
+.time_selected:hover   {
+    cursor:Pointer;
+    transition: 300ms;
+    transform: scale(1.1);
+}
 .datetime-select{
     background-color: #bbbbce;
     border-radius:10px;
@@ -328,7 +334,21 @@ h2 {
 }
 
 /*---------------------Booking page-------------------------*/
-/**/
+/* top */
+.topBack{
+    height: 30px;
+    margin-left: 5%;
+}
+.topBack a{
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 20px;
+}
+/* left */
+.booking-poster{
+    width: 300px;
+    box-shadow:6px 6px 3px #2F2F2F;
+}
 .main-right{
     height: auto;
     display: flex;
@@ -336,7 +356,10 @@ h2 {
     justify-content: center;
     align-items: center;
     color: #fff;
+    margin-left: 30%;
+    width: 65%;
 }
+/* right */
 .movie_container #movie {
 margin-left: 10px;
 padding: 5px 15px;
