@@ -12,9 +12,9 @@ if (mysqli_connect_errno()) {
    echo "<br>Error: Could not connect to database.  Please try again later.";
    exit;
 }
-echo "<br><br><br><br>";
+// echo "<br><br><br><br>";
 
-echo $_POST['movie-page-time'];
+// echo $_POST['movie-page-time'];
 if (!$_POST['movie-page-card']) {
     $getid = $_POST['movie-card'];
 }
@@ -32,25 +32,6 @@ if ($_POST['movie-page-date'] != ""){
 if ($_POST['movie-page-time'] != ""){
     $gettime = $_POST['movie-page-time'];
 }
-$query = "SELECT * FROM `movsessions` WHERE `movie_id` = '".$getid."'";
-if ($getcinema){
-    $showcinema = $getcinema;
-    $query = $query." AND `cinema_id` = '".$getcinema."'";
-}
-if ($getdate){
-    $query = $query." AND `date` = '".$getdate."'";
-}
-if ($gettime){
-    $query = $query." AND `time` = '".$gettime."'";
-}
-
-// echo $getid.'<br>';
-// echo $getcinema.'<br>';
-// echo $getdate.'<br>';
-// echo $gettime.'<br>';
-echo $query;
-$moviesessions = $db->query($query);
-$no_records = $moviesessions->num_rows;
 
 $cinemaquery = "SELECT DISTINCT `cinema_id` FROM `movsessions` WHERE `movie_id` = '".$getid."' ORDER BY `cinema_id`";
 $moviesessions_cinema = $db->query($cinemaquery);
@@ -65,7 +46,6 @@ for ($i=0; $i<$no_records_cinema; $i++) {
 //所有这个电影有的日期
 if(!$getcinema){
     $datequery = "SELECT DISTINCT `date` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' ORDER BY `date`";
-    //$getcinema = $default_cinema;
 }
 else{
     $datequery = "SELECT DISTINCT `date` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' ORDER BY `date`";
@@ -82,7 +62,7 @@ for ($i=0; $i<$no_records_date; $i++) {
         $default_date = $row['date']; //默认为第一个
     }
 }
-echo "<br>select date: ".$select_date;
+// echo "<br>select date: ".$select_date;
 
 //所有这个日期的时间
 if (!$getdate){
@@ -115,14 +95,70 @@ for ($i=0; $i<$no_records_time; $i++) {
         $default_time = $row['time']; //默认为第一个
     }
 }
-echo "<br>select time: ".$select_time;
-echo "<br>default time: ".$default_time;
+// echo "<br>select time: ".$select_time;
+// echo "<br>default time: ".$default_time;
 
 //get movie name and url
 $moviequery = "SELECT * FROM `movies` WHERE `id` = '".$getid."'";
 $moviedetails = $db->query($moviequery)->fetch_object();
 $moviename = $moviedetails->movie_name; 
 $movieurl = $moviedetails->picture_url; 
+
+$query = "SELECT * FROM `movsessions` WHERE `movie_id` = '".$getid."'";
+if ($getcinema){
+    $query = $query." AND `cinema_id` = '".$getcinema."'";
+}
+else{
+    $query = $query." AND `cinema_id` = '".$default_cinema."'";
+}
+if ($getdate){
+    $query = $query." AND `date` = '".$getdate."'";
+}
+else{
+    $query = $query." AND `date` = '".$default_date."'";
+}
+if ($gettime){
+    $query = $query." AND `time` = '".$gettime."'";
+}
+else{
+    $query = $query." AND `time` = '".$default_time."'";
+}
+
+// echo $getid.'<br>';
+// echo $getcinema.'<br>';
+// echo $getdate.'<br>';
+// echo $gettime.'<br>';
+// echo "<br>".$query;
+$moviesessions = $db->query($query);
+$no_records = $moviesessions->num_rows;
+$seats = "";
+for ($j=0; $j<$no_records; $j++) {
+    $seatrow = $moviesessions->fetch_assoc();
+    //电影id，影院id，日期，时间已唯一确定一场电影
+    if ($j=='0'){
+        $price = $seatrow['price'];
+        // echo "<br>".$price;
+    }
+    //start row
+    if (in_array($j, [0, 10, 20, 30, 40])){
+        $seats = $seats.'<div class="row">
+        ';
+    }
+    //set seat
+    if ($seatrow['status']=="Available"){
+        $seats = $seats.'<div class="seat" id="'.$seatrow['seat_id'].'"></div>
+        ';
+    }
+    else{
+        $seats = $seats.'<div class="seat occupied" id="'.$seatrow['seat_id'].'"></div>
+        ';
+    }
+    //end row
+    if (in_array($j, [9, 19, 29, 39, 49])){
+        $seats = $seats.'</div>
+        ';
+    }
+}
 
 $db->close();
 ?>
@@ -188,17 +224,11 @@ $db->close();
                 <div class="booking-time-select">
                     <label for="movie-page-time">Time: </label>
                     <!-- <input id="movie-page-cinema" name="movie-page-cinema" value="" style="display: none;"/> -->
-                    <select name="movie-page-time" id="movie-page-time" value="<?=$gettime?>" onchange="submitmovieForm('BookingPage.php',<?=$getcinema?>,<?=$getdate?>,this.value)">
+                    <select name="movie-page-time" id="movie-page-time" value="<?=$gettime?>" onchange="submitmovieForm('BookingPage.php',<?=$getcinema?>,'<?=$getdate?>',this.value)">
                         <?=$select_time?>
                     </select>
                 </div>
-<!--                 <select name="movie" id="movie">
-                    <option value="19.8">19.8</option>
-                    <option value="25.6">25.6</option>
-                    <option value="30">30</option>
-                    <option value="48.8">48.8</option>
-            
-                </select> -->
+
                 <script>
                     function submitmovieForm(action,cinema,date,time) {
                         document.getElementById("movie-page-cinema").value = cinema;
@@ -211,6 +241,9 @@ $db->close();
             </div>
 
             <div>
+                <input id="movie" name="movie" value="<?=$price?>" style="display: none;"/>
+                <input id="seats" name="seats" value="" style="display: none;"/>
+                <input id="seatnum" name="seatnum" value="" style="display: none;"/>
                 <ul class="showcase">
                     <li>
                         <div class="seat"></div>
@@ -222,7 +255,7 @@ $db->close();
                     </li>
                     <li>
                         <div class="seat occupied"></div>
-                        <i>Occupied</i>
+                        <i>Occupied/Unavailable</i>
                     </li>
                 </ul>
             </div>
@@ -231,73 +264,20 @@ $db->close();
                 <div class="screen">
                 </div>
             
-                <div class="row">
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                </div>
-            
-                <div class="row">
-                    <div class="seat occupied"></div>
-                    <div class="seat occupied"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                </div>
-            
-                <div class="row">
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat occupied"></div>
-                    <div class="seat occupied"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                </div>
-            
-                <div class="row">
-                    <div class="seat"></div>
-                    <div class="seat occupied"></div>
-                    <div class="seat occupied"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                </div>
-            
-                <div class="row">
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat"></div>
-                    <div class="seat occupied"></div>
-                    <div class="seat occupied"></div>
-                </div>
+                <?=$seats?>
         
             </div>
-            <p>Your selected <span class="count">1</span> seats, totally S$ <span class="total">100</span></p>
+            <div>
+                <p>Your selected <span class="count">1</span> seats, totally S$ <span class="total">100</span></p>
+            </div>
+            <div class="proceed">
+                <div class="pay">
+                    <button class="paybutton" onclick="place_order('PaymentSuccessfulPage.php')">proceed to Pay</button>
+                </div>
+                <div class="addcart">
+                    <a onclick="add_cart()"><img src="./img/cart.png" width="30" height="30"></a>
+                </div>
+            </div>
         </form>
         </div>
 
@@ -333,5 +313,6 @@ $db->close();
     }
 </script>
 <script src="./seatselect.js"></script>
+<script src="./bookingproceed.js"></script>
 </body>
 </html>

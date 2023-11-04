@@ -54,7 +54,8 @@ create table IF NOT EXISTS orders
   movsession_id int(8) NOT NULL,
   timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   subtotal float(10,2) NOT NULL DEFAULT 0,
-  review varchar(255)
+  review varchar(255),
+  star int(8)
 );
 
 CREATE TABLE IF NOT EXISTS movies 

@@ -360,6 +360,9 @@ h2 {
     width: 65%;
 }
 /* right */
+.bookingselection{
+    width: 100%;
+}
 .movie_container #movie {
 margin-left: 10px;
 padding: 5px 15px;
@@ -431,6 +434,78 @@ font-size: 14px;
 }
 .container p span {
 color: #6feaf6;
+}
+.proceed{
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.pay{
+    float: right;
+}
+.addcart{
+    margin-right: 200px;
+}
+.addcart a{
+    float: right;
+    margin-top: 20px;
+}
+.addcart:hover   {
+    cursor:Pointer;
+}
+.paybutton{
+    margin: 10px 10px;
+    border:none;
+    background-color: #5b5b6b;
+    border-radius:15px;
+    width:180px;
+    height: 55px;
+    text-align: center;
+    font-size: 20px;
+    color: #FFFFFF;
+}
+.paybutton:hover   {
+    cursor:Pointer;
+}
+.confirm{
+    align-items: center;
+}
+.confirmbutton{
+    margin: 10px 10px;
+    border:none;
+    background-color: #5b5b6b;
+    border-radius:15px;
+    width:180px;
+    height: 55px;
+    text-align: center;
+    font-size: 20px;
+    color: #FFFFFF;
+}
+.confirmbutton:hover   {
+    cursor:Pointer;
+}
+.mid_img{
+    text-align: center;
+    width:80%;
+    margin: auto;
+}
+.mid_img p{
+    font-size: 30px;
+    color: #FFFFFF;
+}
+.backbutton{
+    margin: 50px auto;
+    border:none;
+    background-color: #5b5b6b;
+    border-radius:15px;
+    width:220px;
+    height: 55px;
+    line-height: 55px;
+    text-align: center;}
+.backbutton a{
+    text-decoration: none;
+    font-size: 20px;
+    color: #FFFFFF;
 }
 
 /*---------------------Cinema page-------------------------*/

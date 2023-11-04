@@ -29,8 +29,8 @@ container.addEventListener('click',e=>{
 })
 
 //选电影的场次
-movie.addEventListener('change',e=>{
-    updateSelectedCount()
-})
+// movie.addEventListener('change',e=>{
+//     updateSelectedCount()
+// })
 
 updateSelectedCount()
