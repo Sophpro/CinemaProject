@@ -32,7 +32,7 @@
     <div class="top-right">
     <div class="log">
         <div class="logbutton">
-            <a href="#">Log in</a>
+            <a href="LoginPage.html">Log in</a>
         </div>
     </div>
     <div class="cart">

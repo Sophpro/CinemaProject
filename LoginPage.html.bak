@@ -18,13 +18,13 @@
             <li><a href="#">Cinemas</a></li>
             <li><a href="#">Promotions</a></li>
             <li><a href="#">Dining</a></li> 
-            <li><a href="#">Mine</a></li>
+           <li><a href="#">Mine</a></li>
         </ul>
     </div>
     <div class="top-right">
     <div class="log">
         <div class="logbutton">
-            <a href="#">Log in</a>
+            <a href="LoginPage.html">Log in</a>
         </div>
     </div>
     <div class="cart">
@@ -35,27 +35,29 @@
   <div class="main">
     <div class="main-right">
      <div class="movie_container">
-    <p>Sign Up</p>
+     
+       <p>Login</p>
+     
+      
 	</div>
-	  <form action="insertuser.php" method="post">
-        <p class="label-text">Username</p>
+	<form action="authmain.php" method="post">
+	   <p class="label-text">Username</p>
+        <div class="textbox">
           <input type="text" name="username" class="text-field" placeholder="Username" required>
+        </div>
         <br>
-        <p class="label-text">Password</p>
-        <input type="password" class="text-field" id="password" placeholder="Password" name="password" required>
-		<p class="label-text">Confirm password</p>
-		
-        <input type="password" id="password2" class="text-field" placeholder="Password"  name="password2" required>
-        <p class="label-text">Email</p>
-		
-        <input type="text" id="email" name="email" class="text-field" placeholder="Username" required>
-        <p class="label-text">Phone Number</p>
-		
-        <input type="text" id="telephone" name="telephone"  class="text-field" placeholder="Username" required>
+		 <p class="label-text">Password</p>
+        <div class="textbox">
+          <input type="password" name="password" class="text-field" placeholder="Password" required>
+        </div>
+       
         <br>
+       
+		<a href="SignupPage.html">Don't have an account? Click here to signup</a>
 		<br>
-        <input type="submit"  class = "login" value="Sign Up" required>
-      </form>
+		<br>
+		<input type="submit"  class = "login" value="Login" required>
+		</form>
 		<br>
     </div>
   </div>
@@ -69,4 +71,3 @@
 </div>
 </body>
 </html>
-
