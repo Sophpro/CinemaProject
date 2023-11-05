@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS promotions
   code varchar(255)
 );
 INSERT INTO promotions VALUES
-(1, 'New User Carnival', 'Thank you for joining MZ Cinema! We would like to offer a great 10% discount for all new users. Please find the Promotion Code in your email inbox and "Zoom" to a movie NOW!', '0.9', 'MZCINEMA'),
+(1, 'New User Carnival', 'Thank you for joining MZ Cinema! We would like to offer a great 10% discount for all new users (usable for one movie). Please find the Promotion Code in your email inbox and "Zoom" to a movie NOW!', '0.9', 'MZCINEMA'),
 (2, 'MZ at Boonlay', 'Our latest branch at Boonlay is open now! All the movies onging in MZ Boonlay is enjoying a 5% discount (already shown in price at booking)!', '0.95', Null);
 
 CREATE TABLE IF NOT EXISTS dining 
@@ -54,7 +54,9 @@ create table IF NOT EXISTS orders
   movsession_id int(8) NOT NULL,
   timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   subtotal float(10,2) NOT NULL DEFAULT 0,
-  review varchar(255)
+  review varchar(255),
+  star int(8),
+  promotion varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS movies 
