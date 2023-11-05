@@ -16,6 +16,14 @@ if (mysqli_connect_errno()) {
    exit;
 }
 // echo "<br><br><br><br><br><br><br><br>";
+$getpromotion = $_POST['movie-page-promotion'];
+if ($getpromotion){
+  $promotionquery = "SELECT `discount` FROM `promotions` WHERE `code` = '".$getpromotion."'";
+  $promotions = $db->query($promotionquery)->fetch_object();
+  $discount = $promotions->discount;
+}
+
+
 $query_user = "SELECT * FROM `users` WHERE `username` = '".$username."'";
 $users = $db->query($query_user)->fetch_object();
 $user_id = $users->id;
@@ -30,6 +38,10 @@ $seatsString = $_POST['seats'];
 $getseats = explode(',', $seatsString);
 $numseat = $_POST['seatnum'];
 $total = $numseat * $getprice;
+if ($discount){
+  $newtotal = $total * $discount;
+  $getprice = $getprice * $discount;
+}
 
 $moviequery = "SELECT * FROM `movies` WHERE `id` = '".$getid."'";
 $moviedetails = $db->query($moviequery)->fetch_object();
@@ -122,6 +134,14 @@ $premessage = "
           <td>Seat Number(s): </td>
           <td>".$seatnum."</td>
           </tr>
+          ";
+if ($getpromotion){
+  $premessage = $premessage."<tr>
+          <td>Promotion Code: </td>
+          <td>".$getpromotion."</td>
+          </tr>";
+}
+$premessage = $premessage."
           </table>
           </body>
           </html>
@@ -166,11 +186,12 @@ $premessage = "
         $movsession_string = $_POST['movsession_id'];
         $subtotal = $_POST['subtotal'];
         $message = $_POST['message'];
+        $promotion = $_POST['promotion'];
         //echo $message;
         if ($user_id && $movsession_string && $subtotal){
           $movsession_id = explode(',', $movsession_string);
           foreach($movsession_id as $session){
-            $query_update = "UPDATE movsessions SET `status` = 'Occupied' WHERE `id` = '".$session."' AND `status` = 'Available' AND `date` >= '".date('Y-m-d')."'";
+            $query_update = "UPDATE movsessions SET `status` = 'Occupied' WHERE `id` = '".$session."' AND `status` = 'Available'";
             $result = $db->query($query_update);
             if (!$result) {
               echo '<div class="mid_img">
@@ -200,7 +221,7 @@ $premessage = "
             $query_check = "SELECT * FROM orders WHERE movsession_id = '".$session."'";
             $result_check = $db->query($query_check);
             if ($result_check->num_rows == 0) {
-              $query_order = "INSERT into orders value('', '".$user_id."', '".$session."', '".date('Y-m-d H-m-s')."', '".$subtotal."', '', '')";
+              $query_order = "INSERT into orders value('', '".$user_id."', '".$session."', '".date('Y-m-d H-m-s')."', '".$subtotal."', '', '', '".$promotion."')";
               $result = $db->query($query_order);
                 if (!$result) {
                   echo '<div class="mid_img">
@@ -314,7 +335,8 @@ $premessage = "
                 </tr>
                 <tr>
                 <td>Total Price: </td>
-                <td>S$ <?=$total?></td>
+                <?php if($discount){echo "<td><a style='text-decoration: line-through;'>S$ ".$total."</a> S$".$newtotal;}
+                      else{echo "<td>S$ ".$total;}?></td>
                 </tr>
               </table>
             </div>
@@ -347,6 +369,7 @@ $premessage = "
                     <input id="movsession_id" name="movsession_id" value="<?=$sessionnum?>" style="display: none;"/>
                     <input id="subtotal" name="subtotal" value="<?=$getprice?>" style="display: none;"/>
                     <input id="message" name="message" value="<?=$premessage?>" style="display: none;"/>
+                    <input id="promotion" name="promotion" value="<?php if($getpromotion){echo $getpromotion;}?>" style="display: none;"/>
                     <button class="confirmbutton" onclick="submitbooking('PaymentSuccessfulPage.php')">Payment Done</button>
                   </form>
             </div>

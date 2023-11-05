@@ -1,13 +1,21 @@
-function place_order(action){
-	if (selectedSeatIds.length > 0){
-		document.getElementById("seats").value = selectedSeatIds;
-		document.getElementById("seatnum").value = selectedSeatIds.length;
-		document.getElementById("bookingselection").action = action;
-		document.getElementById("bookingselection").submit();
+function place_order(action,codes){
+	var promotion = document.getElementById("movie-page-promotion").value;
+	if (codes === "" || (promotion && (promotion!="") && codes.indexOf(promotion) === -1))
+	{
+		alert(promotion + " is not a valid promotion code! Please try again!");
 	}
 	else{
-		alert("You have not select your seats!");
+		if (selectedSeatIds.length > 0){
+			document.getElementById("seats").value = selectedSeatIds;
+			document.getElementById("seatnum").value = selectedSeatIds.length;
+			document.getElementById("bookingselection").action = action;
+			document.getElementById("bookingselection").submit();
+		}
+		else{
+			alert("You have not select your seats!");
+		}
 	}
+
 	
 }
 

@@ -400,7 +400,17 @@ h2 {
     text-align:left;
     margin-bottom: 5%;
 }
+.movie_container .booking-promotion{
+    font-size:20px;
+    text-align:left;
+    margin-bottom: 5%;
+}
 .movie_container select{
+    height: 30px;
+    width: 150px;
+    font-size:18px;
+}
+.movie_container input{
     height: 30px;
     width: 150px;
     font-size:18px;

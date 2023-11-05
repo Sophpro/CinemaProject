@@ -62,7 +62,7 @@
                 </tr>
                 <tr>
                   <td>Date</td>
-                  <td align="center"><input type="date" name="mydate" id="myDate" min="" value="<?php echo isset($_POST['mydate']) ? htmlspecialchars($_POST['mydate']) : ''; ?>"></td> <!-- 和casestudy一样不能选今天之前，tbc -->
+                  <td align="center"><input type="date" name="mydate" id="myDate" min="<?=date('Y-m-d')?>" value="<?php echo isset($_POST['mydate']) ? htmlspecialchars($_POST['mydate']) : ''; ?>"></td>
                 </tr>
                 <tr>
                   <td>Genre</td>
@@ -81,7 +81,7 @@
                       </select></td>
                 </tr>
                 <tr>
-                  <td align="center"><button class="filterbutton" onclick="clearSelection()" type="reset">Clear</button></td>
+                  <td align="center"><button class="filterbutton" onclick="clearSelection()">Clear</button></td>
                   <td align="center"><button class="filterbutton" type="submit">Search</button></td>
                 </tr>
               </table>

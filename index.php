@@ -75,7 +75,7 @@
                 </tr>
                 <tr>
                   <td>Date</td>
-                  <td align="center"><input type="date" name="mydate" id="myDate" min=""></td>
+                  <td align="center"><input type="date" name="mydate" id="myDate" min="<?=date('Y-m-d')?>"></td>
                 </tr>
                 <tr>
                   <td>Genre</td>
@@ -94,7 +94,7 @@
                       </select></td>
                 </tr>
                 <tr>
-                  <td align="center"><button class="filterbutton" onclick="clearSelection()" type="reset">Clear</button></td>
+                  <td align="center"><button class="filterbutton" onclick="clearSelection()">Clear</button></td>
                   <td align="center"><button class="filterbutton" type="submit">Search</button></td>
                 </tr>
               </table>

@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <?php
+$username="f32ee"; //to be replaced with login info $_SESSION['valid_user']
+
 error_reporting(0);
 date_default_timezone_set('Asia/Singapore');
 @ $db = new mysqli('localhost', 'root', '', 'mzcinema');
@@ -14,6 +16,11 @@ if (mysqli_connect_errno()) {
    exit;
 }
 // echo "<br><br><br><br>";
+
+$query_user = "SELECT * FROM `users` WHERE `username` = '".$username."'";
+$users = $db->query($query_user)->fetch_object();
+$user_id = $users->id;
+$user_email = $users->email;
 
 // echo $_POST['movie-page-time'];
 if (!$_POST['movie-page-card']) {
@@ -161,6 +168,28 @@ for ($j=0; $j<$no_records; $j++) {
     }
 }
 
+$promotionquery = "SELECT `code` FROM `promotions`";
+$promotions = $db->query($promotionquery);
+$no_promotions = $promotions->num_rows;
+$codesarray = [];
+$codes = "";
+for ($p=0; $p<$no_promotions; $p++) {
+    $promotionrow = $promotions->fetch_assoc();
+    $codesarray[] = $promotionrow['code'];
+}
+$promotioncheck = "SELECT `promotion` FROM `orders` WHERE `user_id` = '".$user_id."'";
+$promotionsused = $db->query($promotioncheck);
+$no_promotionsused = $promotionsused->num_rows;
+for ($q=0; $q<$no_promotionsused; $q++) {
+    $checkrow = $promotionsused->fetch_assoc();
+    $usedPromotion = $checkrow['promotion'];
+    $index = array_search($usedPromotion, $codesarray);
+    if ($index !== false) {
+        unset($codesarray[$index]);
+    }
+}
+$codes = implode(',', $codesarray);
+
 $db->close();
 ?>
 <body>
@@ -208,7 +237,6 @@ $db->close();
                 <input id="movie-page-card" name="movie-page-card" value="<?=$getid?>" style="display: none;"/>
                 <div class="booking-cinema-select">
                     <label for="movie-page-cinema">Cinema: </label>
-                    <!-- <input id="movie-page-cinema" name="movie-page-cinema" value="" style="display: none;"/> -->
                     <select name="movie-page-cinema" id="movie-page-cinema" value="<?=$default_cinema?>" onchange="submitmovieForm('BookingPage.php',this.value,'','')">
                         <option value="1">Marina</option>
                         <option value="2">Downtown</option>
@@ -217,17 +245,19 @@ $db->close();
                 </div>
                 <div class="booking-date-select">
                     <label for="movie-page-date">Date: </label>
-                    <!-- <input id="movie-page-cinema" name="movie-page-cinema" value="" style="display: none;"/> -->
                     <select name="movie-page-date" id="movie-page-date" value="<?=$default_date?>" onchange="submitmovieForm('BookingPage.php','<?=$getcinema?>',this.value,'')">
                         <?=$select_date?>
                     </select>
                 </div>
                 <div class="booking-time-select">
                     <label for="movie-page-time">Time: </label>
-                    <!-- <input id="movie-page-cinema" name="movie-page-cinema" value="" style="display: none;"/> -->
                     <select name="movie-page-time" id="movie-page-time" value="<?=$default_time?>" onchange="submitmovieForm('BookingPage.php','<?=$getcinema?>','<?=$getdate?>',this.value)">
                         <?=$select_time?>
                     </select>
+                </div>
+                <div class="booking-promotion">
+                    <label for="movie-page-promotion">Promotion Code: </label>
+                    <input type="text" id="movie-page-promotion" name="movie-page-promotion" placeholder="If any">
                 </div>
 
                 <script>
@@ -273,7 +303,7 @@ $db->close();
             </div>
             <div class="proceed">
                 <div class="pay">
-                    <button class="paybutton" onclick="place_order('PaymentSuccessfulPage.php')">Proceed to Pay</button>
+                    <button class="paybutton" onclick="place_order('PaymentSuccessfulPage.php','<?=$codes?>')">Proceed to Pay</button>
                 </div>
                 <div class="addcart">
                     <a onclick="add_cart()"><img src="./img/cart.png" width="30" height="30"></a>
