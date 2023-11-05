@@ -102,7 +102,7 @@ footer a { color:#FFFFFF;
 }
 footer img { border-radius:8px;}
 .main{padding-top: 80px;
-    min-height: 500px;
+    min-height: 600px;
 } 
 
 /*---------------------Home page-------------------------*/
@@ -578,6 +578,59 @@ color: #6feaf6;
 /*---------------------Dining page-------------------------*/
 
 /*---------------------Mine page-------------------------*/
+
+.ticket{
+    width: 900px;
+    height: 300px;
+    min-width: 400px;
+    display: flex;
+    margin: 5px auto;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    background-image: url(./img/ticket.png);
+    background-repeat: no-repeat;
+    background-size: 100% 300px;
+    background-position: center;
+}
+.ticket_left{
+    float:left;
+    width: 200px;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    height: 100%;
+    margin: auto;
+}
+.ticket_poster{
+    width: 140px;
+    border-radius:25px;
+    margin: 60px 10px 60px 0px;
+}
+.ticket_right{
+    margin-left: 20px;
+    margin-right: 50px;
+    width: 500px;
+}
+.ticket_right .movie-name{
+    text-align: left;
+    font-size:20px;
+}
+.ticket_right .movie-description{
+    color: #FFFFFF;
+}
+.upcoming{
+    width: 80%;
+    margin: auto;
+    padding-bottom: 40px;
+    color: #FFFFFF;
+}
+.past{
+    width: 80%;
+    margin: auto;
+    padding-bottom: 40px;
+    color: #FFFFFF;
+}
 
 /*---------------------Cart page-------------------------*/
 

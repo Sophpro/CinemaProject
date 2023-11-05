@@ -7,6 +7,7 @@
 </head>
 <?php
 error_reporting(0);
+date_default_timezone_set('Asia/Singapore');
 @ $db = new mysqli('localhost', 'root', '', 'mzcinema');
 if (mysqli_connect_errno()) {
    echo "<br>Error: Could not connect to database.  Please try again later.";
@@ -33,7 +34,7 @@ if ($_POST['movie-page-time'] != ""){
     $gettime = $_POST['movie-page-time'];
 }
 
-$cinemaquery = "SELECT DISTINCT `cinema_id` FROM `movsessions` WHERE `movie_id` = '".$getid."' ORDER BY `cinema_id`";
+$cinemaquery = "SELECT DISTINCT `cinema_id` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `date` >= '".date('Y-m-d')."' ORDER BY `cinema_id`";
 $moviesessions_cinema = $db->query($cinemaquery);
 $no_records_cinema = $moviesessions_cinema->num_rows;
 for ($i=0; $i<$no_records_cinema; $i++) {
@@ -45,10 +46,10 @@ for ($i=0; $i<$no_records_cinema; $i++) {
 
 //所有这个电影有的日期
 if(!$getcinema){
-    $datequery = "SELECT DISTINCT `date` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' ORDER BY `date`";
+    $datequery = "SELECT DISTINCT `date` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' AND `date` >= '".date('Y-m-d')."' ORDER BY `date`";
 }
 else{
-    $datequery = "SELECT DISTINCT `date` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' ORDER BY `date`";
+    $datequery = "SELECT DISTINCT `date` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` >= '".date('Y-m-d')."' ORDER BY `date`";
 }
 $moviesessions_date = $db->query($datequery);
 $no_records_date = $moviesessions_date->num_rows;
@@ -67,19 +68,19 @@ for ($i=0; $i<$no_records_date; $i++) {
 //所有这个日期的时间
 if (!$getdate){
     if(!$getcinema){
-        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' AND `date` = '".$default_date."' ORDER BY `time`";
+        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' AND `date` = '".$default_date."' AND `date` >= '".date('Y-m-d')."' ORDER BY `time`";
     }
     else{
-        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$default_date."' ORDER BY `time`";
+        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$default_date."' AND `date` >= '".date('Y-m-d')."' ORDER BY `time`";
     }
     //$getdate = $default_date;
 }
 else{
     if(!$getcinema){
-        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' AND `date` = '".$getdate."' ORDER BY `time`";
+        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' AND `date` = '".$getdate."' AND `date` >= '".date('Y-m-d')."' ORDER BY `time`";
     }
     else{
-        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$getdate."' ORDER BY `time`";
+        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$getdate."' AND `date` >= '".date('Y-m-d')."' ORDER BY `time`";
     }
 }
 
@@ -104,7 +105,7 @@ $moviedetails = $db->query($moviequery)->fetch_object();
 $moviename = $moviedetails->movie_name; 
 $movieurl = $moviedetails->picture_url; 
 
-$query = "SELECT * FROM `movsessions` WHERE `movie_id` = '".$getid."'";
+$query = "SELECT * FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `date` >= '".date('Y-m-d')."'";
 if ($getcinema){
     $query = $query." AND `cinema_id` = '".$getcinema."'";
 }

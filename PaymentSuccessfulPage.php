@@ -6,13 +6,20 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <?php
+$username="f32ee"; //to be replaced with login info $_SESSION['valid_user']
+
 error_reporting(0);
+date_default_timezone_set('Asia/Singapore');
 @ $db = new mysqli('localhost', 'root', '', 'mzcinema');
 if (mysqli_connect_errno()) {
    echo "<br>Error: Could not connect to database.  Please try again later.";
    exit;
 }
 // echo "<br><br><br><br><br><br><br><br>";
+$query_user = "SELECT * FROM `users` WHERE `username` = '".$username."'";
+$users = $db->query($query_user)->fetch_object();
+$user_id = $users->id;
+$user_email = $users->email;
 
 $getid = $_POST['movie-page-card'];
 $getcinema = $_POST['movie-page-cinema'];
@@ -38,12 +45,13 @@ $seatnumArray = [];
 $sessionnum = "";
 $sessionnumArray = [];
 foreach ($getseats as $seat){
-  $query = "SELECT * FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$getdate."' AND `time` = '".$gettime."' AND `seat_id` = '".$seat."'";
+  $query = "SELECT * FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$getdate."' AND `time` = '".$gettime."' AND `seat_id` = '".$seat."' AND `date` >= '".date('Y-m-d')."'";
   $moviesessions = $db->query($query)->fetch_object();
   if ($moviesessions) {
     $session = $moviesessions->id;
     $seatnumArray[] = $seat;
     $sessionnumArray[] = $session;
+    $hall = $moviesessions->hall;
   }
 }
 sort($seatnumArray);
@@ -52,7 +60,7 @@ sort($sessionnumArray);
 $sessionnum = implode(',', $sessionnumArray);
 
 $seats = "";
-$query_all = "SELECT * FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$getdate."' AND `time` = '".$gettime."'";
+$query_all = "SELECT * FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$getdate."' AND `time` = '".$gettime."' AND `date` >= '".date('Y-m-d')."'";
 $moviesessions_all = $db->query($query_all);
 $no_records_all = $moviesessions_all->num_rows;
 for ($j=0; $j<$no_records_all; $j++){
@@ -87,6 +95,7 @@ for ($j=0; $j<$no_records_all; $j++){
 $premessage = "
           <html>
           <head>
+          <meta charset='utf-8'>
           <title>Movie Booking Confirmation</title>
           </head>
           <body>
@@ -99,7 +108,7 @@ $premessage = "
           </tr>
           <tr>
           <td>Cinema Name: </td>
-          <td>".$cinemaname."</td>
+          <td>MZ ".$cinemaname." Hall ".$hall."</td>
           </tr>
           <tr>
           <td>Date: </td>
@@ -153,9 +162,7 @@ $premessage = "
     </div>
     <div class="midView">
         <?php 
-        date_default_timezone_set('Asia/Singapore');
-        $user_id = $_POST['user_id'];
-        $to = $_POST['user_email'];
+        $to = $user_email;
         $movsession_string = $_POST['movsession_id'];
         $subtotal = $_POST['subtotal'];
         $message = $_POST['message'];
@@ -163,7 +170,7 @@ $premessage = "
         if ($user_id && $movsession_string && $subtotal){
           $movsession_id = explode(',', $movsession_string);
           foreach($movsession_id as $session){
-            $query_update = "UPDATE movsessions SET `status` = 'Occupied' WHERE `id` = '".$session."' AND `status` = 'Available'";
+            $query_update = "UPDATE movsessions SET `status` = 'Occupied' WHERE `id` = '".$session."' AND `status` = 'Available' AND `date` >= '".date('Y-m-d')."'";
             $result = $db->query($query_update);
             if (!$result) {
               echo '<div class="mid_img">
@@ -227,7 +234,7 @@ $premessage = "
           
           //设置 content-type
           $headers = "MIME-Version: 1.0" . "\r\n";
-          $headers .= "Content-type:text/html;charset=iso-8859-1" . "\r\n";
+          $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
           $headers .= 'From: f32ee@localhost' . "\r\n";
           
@@ -337,10 +344,6 @@ $premessage = "
             <p>Please double check and click the button below after payment!</p>
             <div class="confirm">
                   <form id="confirm_booking" method="post" action="">
-                    <input id="user_id" name="user_id" value="1" style="display: none;"/> <!-- to be replaced with login info -->
-                    <!-- <input id="user_id" name="user_id" value="$_SESSION['valid_user']?可能需要从users database table提取user id" style="display: none;"/> -->
-                    <input id="user_email" name="user_email" value="f32ee@localhost" style="display: none;"/> <!-- to be replaced with login info -->
-                    <!-- <input id="user_email" name="user_email" value="$_SESSION['valid_user']?可能需要从users database table提取user email" style="display: none;"/> -->
                     <input id="movsession_id" name="movsession_id" value="<?=$sessionnum?>" style="display: none;"/>
                     <input id="subtotal" name="subtotal" value="<?=$getprice?>" style="display: none;"/>
                     <input id="message" name="message" value="<?=$premessage?>" style="display: none;"/>

@@ -90,6 +90,7 @@
         <div class="rightcolumn">
         <?php
           error_reporting(0);
+          date_default_timezone_set('Asia/Singapore');
           $name=Null;
           $cinema=Null;
           $date=Null;
@@ -122,15 +123,15 @@
             if ($date || ($cinema != 'Null')){
               //有date，有cinema
               if ($date && ($cinema != 'Null')){
-                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `date` = "'.$date.'" and `cinema_id` = "'.$cinema.'" ORDER BY `movie_id`';
+                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `date` = "'.$date.'" and `cinema_id` = "'.$cinema.'" and `date` >= "'.date('Y-m-d').'" ORDER BY `movie_id`';
               }
               //有date，无cinema
               else if ($date && ($cinema == 'Null')){
-                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `date` = "'.$date.'" ORDER BY `movie_id`';
+                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `date` = "'.$date.'" and `date` >= "'.date('Y-m-d').'" ORDER BY `movie_id`';
               }
               //无date，有cinema
               else if (!$date && ($cinema != 'Null')){
-                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `cinema_id` = "'.$cinema.'" ORDER BY `movie_id`';
+                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `cinema_id` = "'.$cinema.'" and `date` >= "'.date('Y-m-d').'" ORDER BY `movie_id`';
               }
               $premovies = $db->query($prequery);
               $pre_no_records = $premovies->num_rows;
@@ -194,7 +195,7 @@
           }
                 for ($i=0; $i<$no_records; $i++) {
                     $row = $movies->fetch_assoc();
-                    $sessionquery = 'select DISTINCT `cinema_id`, `date`, `time` from `movsessions` where `movie_id` = "'.$row['id'].'" ORDER BY `date`';
+                    $sessionquery = 'select DISTINCT `cinema_id`, `date`, `time` from `movsessions` where `movie_id` = "'.$row['id'].'" and `date` >= "'.date('Y-m-d').'" ORDER BY `date`';
                     $sessions = $db->query($sessionquery);
                     $no_sessions = $sessions->num_rows;
                     $cinemas = 'Availabe Cinemas: ';

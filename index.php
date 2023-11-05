@@ -105,6 +105,7 @@
           <div class="content">
             <?php
                 error_reporting(0);
+                date_default_timezone_set('Asia/Singapore');
                 @ $db = new mysqli('localhost', 'root', '', 'mzcinema');
                 if (mysqli_connect_errno()) {
                   echo "<br>Error: Could not connect to database. Please try again later.";
@@ -116,7 +117,7 @@
                 $no_records = $movies->num_rows;
                 for ($i=0; $i<$no_records; $i++) {
                     $row = $movies->fetch_assoc();
-                    $sessionquery = 'select DISTINCT `cinema_id`, `date` from `movsessions` where `movie_id` = "'.$row['id'].'" ORDER BY `date`';
+                    $sessionquery = 'select DISTINCT `cinema_id`, `date` from `movsessions` where `movie_id` = "'.$row['id'].'" and `date` >= "'.date('Y-m-d').'" ORDER BY `date`';
                     $sessions = $db->query($sessionquery);
                     $no_sessions = $sessions->num_rows;
                     $cinemas = 'Availabe Cinemas: ';
