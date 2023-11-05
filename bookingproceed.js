@@ -15,7 +15,8 @@ const selectedSeatIds = [];
 container.addEventListener('click',e=>{
 
     if(e.target.classList.contains('seat')&&
-    !e.target.classList.contains('occupied')){
+    !e.target.classList.contains('occupied')&&
+	e.target.classList.contains('selected')){
         const seatId = e.target.id;
 		const index = selectedSeatIds.indexOf(seatId);
 		if (index === -1) {
@@ -23,4 +24,14 @@ container.addEventListener('click',e=>{
 			selectedSeatIds.push(seatId);
 		}
     }
+	else if(e.target.classList.contains('seat')&&
+    !e.target.classList.contains('occupied')&&
+	!e.target.classList.contains('selected')){
+	 	const seatId = e.target.id;
+	 	const index = selectedSeatIds.indexOf(seatId);
+		if (index != -1) {
+			// If already in the array, remove it
+	 		selectedSeatIds.splice(index, 1);
+		}
+	}
 })

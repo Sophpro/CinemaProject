@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MZ Cinema</title>
+<title>MZ Cinema Booking Confirmation</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -84,6 +84,40 @@ for ($j=0; $j<$no_records_all; $j++){
   }
 }
 
+$premessage = "
+          <html>
+          <head>
+          <title>Movie Booking Confirmation</title>
+          </head>
+          <body>
+          <p>Thank you for choosing MZ Cinema!</p>
+          <p>Your movie ticket below is now ready:</p>
+          <table border='0'>
+          <tr>
+          <td>Movie Name: </td>
+          <td>".$moviename."</td>
+          </tr>
+          <tr>
+          <td>Cinema Name: </td>
+          <td>".$cinemaname."</td>
+          </tr>
+          <tr>
+          <td>Date: </td>
+          <td>".$getdate."</td>
+          </tr>
+          <tr>
+          <td>Time: </td>
+          <td>".$gettime."</td>
+          </tr>
+          <tr>
+          <td>Seat Number(s): </td>
+          <td>".$seatnum."</td>
+          </tr>
+          </table>
+          </body>
+          </html>
+          ";
+
 ?>
 <body>
 
@@ -121,8 +155,11 @@ for ($j=0; $j<$no_records_all; $j++){
         <?php 
         date_default_timezone_set('Asia/Singapore');
         $user_id = $_POST['user_id'];
+        $to = $_POST['user_email'];
         $movsession_string = $_POST['movsession_id'];
         $subtotal = $_POST['subtotal'];
+        $message = $_POST['message'];
+        //echo $message;
         if ($user_id && $movsession_string && $subtotal){
           $movsession_id = explode(',', $movsession_string);
           foreach($movsession_id as $session){
@@ -185,7 +222,17 @@ for ($j=0; $j<$no_records_all; $j++){
                 }
             }
           }
-              echo '<div class="mid_img">
+          
+          $subject = "Movie Booking Confirmation";
+          
+          //设置 content-type
+          $headers = "MIME-Version: 1.0" . "\r\n";
+          $headers .= "Content-type:text/html;charset=iso-8859-1" . "\r\n";
+
+          $headers .= 'From: f32ee@localhost' . "\r\n";
+          
+          if(mail($to,$subject,$message,$headers)){
+            echo '<div class="mid_img">
                       <img class="bookingsuccessful" alt="booking successful" src="./img/bookingsuccessful.png"> 
                       <p>Thank you for booking!</p>
                       <p>An email will be sent to you!</p>
@@ -205,39 +252,100 @@ for ($j=0; $j<$no_records_all; $j++){
                     </div>
                     </body>
                     </html>
-              ';
+          ';
+          } else{
+              echo '<div class="mid_img">
+                    <p>Unable to send email. Please try again.</p>
+                    <div class="backbutton">
+                      <a href="javascript:history.back(-1)">Back to Booking Page</a>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="footer">
+                        <footer>
+                          <small><i><br>Copyright &copy; Movie Zoomer Cinema Pte Ltd</i>
+                            <br><br>Email us: <a href="mailto:MZCinema@mz.com">MZCinema@mz.com</a>
+                            <br><br>Follow us: <img src="./img/iglogo.png" width="30" height="30">  <img src="./img/facebooklogo.png" width="30" height="30">  <img src="./img/tiktoklogo.png" width="30" height="30"></small>
+                        </footer>
+                    </div>
+                    </div>
+                    </body>
+                    </html>
+                    ';
+          }
+          
           $db->close();
           exit;
         }
         ?>
-        <div class="leftcolumn">
+        <p class="booking-title">You are booking:</p>
+        <div class="main-left">
             <div class="movie-poster">
                 <img class="booking-poster" alt="movie poster" src=".<?=$movieurl?>">
             </div>
         </div>
         <div class="main-right">
-            <div class="movie_container">
-                <h2>You are booking:</h2>
-                <p>Movie Name: <?=$moviename?></p>
-                <p>Cinema Name: MZ <?=$cinemaname?></p>
-                <p>Date: <?=$getdate?></p>
-                <p>Time: <?=$gettime?></p>
-                <p>Seat(s) Number: <?=$seatnum?></p>
-                <p>Total Price: S$ <?=$total?></p>
-                <div class="container">
+            <p class="movie-name-title"><?=$moviename?></p>
+            <div>
+              <table border='0' class="movie_table">
+                <tr>
+                <td>Cinema Name: </td>
+                <td>MZ <?=$cinemaname?></td>
+                </tr>
+                <tr>
+                <td>Date: </td>
+                <td><?=$getdate?></td>
+                </tr>
+                <tr>
+                <td>Time: </td>
+                <td><?=$gettime?></td>
+                </tr>
+                <tr>
+                <td>Seat Number(s): </td>
+                <td><?=$seatnum?></td>
+                </tr>
+                <tr>
+                <td>Total Price: </td>
+                <td>S$ <?=$total?></td>
+                </tr>
+              </table>
+            </div>
+            <div class="caseblock">
+                    <ul class="showcase">
+                        <li>
+                            <div class="seat"></div>
+                            <i>Available</i>
+                        </li>
+                        <li>
+                            <div class="seat selected"></div>
+                            <i>Selected</i>
+                        </li>
+                        <li>
+                            <div class="seat occupied"></div>
+                            <i>Occupied/Unavailable</i>
+                        </li>
+                    </ul>
+            </div>
+            <div class="container">
                   <div class="screen">
                   </div>
+                  <div class="seatblock">
                   <?=$seats?>
-                </div>
-                <p>Please double check and click the button below after payment!</p>
-                <div class="confirm">
+                  </div>
+            </div>
+            <p>Please double check and click the button below after payment!</p>
+            <div class="confirm">
                   <form id="confirm_booking" method="post" action="">
-                    <input id="user_id" name="user_id" value="test" style="display: none;"/> <!-- to be replaced with login info -->
+                    <input id="user_id" name="user_id" value="1" style="display: none;"/> <!-- to be replaced with login info -->
+                    <!-- <input id="user_id" name="user_id" value="$_SESSION['valid_user']?可能需要从users database table提取user id" style="display: none;"/> -->
+                    <input id="user_email" name="user_email" value="f32ee@localhost" style="display: none;"/> <!-- to be replaced with login info -->
+                    <!-- <input id="user_email" name="user_email" value="$_SESSION['valid_user']?可能需要从users database table提取user email" style="display: none;"/> -->
                     <input id="movsession_id" name="movsession_id" value="<?=$sessionnum?>" style="display: none;"/>
                     <input id="subtotal" name="subtotal" value="<?=$getprice?>" style="display: none;"/>
+                    <input id="message" name="message" value="<?=$premessage?>" style="display: none;"/>
                     <button class="confirmbutton" onclick="submitbooking('PaymentSuccessfulPage.php')">Payment Done</button>
                   </form>
-                </div>
             </div>
         </div>
 

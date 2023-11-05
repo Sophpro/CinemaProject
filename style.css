@@ -337,7 +337,8 @@ h2 {
 /* top */
 .topBack{
     height: 30px;
-    margin-left: 5%;
+    margin-left:10%;
+    margin-top: 10px;
 }
 .topBack a{
     color: #FFFFFF;
@@ -348,27 +349,61 @@ h2 {
 .booking-poster{
     width: 300px;
     box-shadow:6px 6px 3px #2F2F2F;
+    margin: 10% auto;
+}
+.main-left{
+    float:left;
+    width: 30%;
+    text-align:center;
+    height: 100%;
+    color:#FFFFFF;
+    margin-left: 10%;
 }
 .main-right{
     height: auto;
     display: flex;
+    text-align:center;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     color: #fff;
-    margin-left: 30%;
-    width: 65%;
+    margin-left: 40%;
+    margin-right: 10%;
 }
 /* right */
 .bookingselection{
     width: 100%;
 }
-.movie_container #movie {
-margin-left: 10px;
-padding: 5px 15px;
-font-size: 14px;
-border-radius: 5px;
-appearance: none;
+.movie_container {
+    margin-left: 15%;
+    font-size: 18px;
+    border-radius: 5px;
+    appearance: none;
+}
+.movie-name-title{
+    text-align: center;
+    font-size:28px;
+    margin-bottom: 40px;
+}
+.movie_container .booking-cinema-select{
+    font-size:20px;
+    text-align:left;
+    margin-bottom: 5%;
+}
+.movie_container .booking-date-select{
+    font-size:20px;
+    text-align:left;
+    margin-bottom: 5%;
+}
+.movie_container .booking-time-select{
+    font-size:20px;
+    text-align:left;
+    margin-bottom: 5%;
+}
+.movie_container select{
+    height: 30px;
+    width: 150px;
+    font-size:18px;
 }
 .movie_container #movie {
 margin-left: 10px;
@@ -376,6 +411,13 @@ padding: 5px 15px;
 font-size: 14px;
 border-radius: 5px;
 appearance: none;
+}
+.caseblock{
+display: flex;
+text-align:center;
+flex-direction: column;
+justify-content: center;
+align-items: center;
 }
 .showcase {
 margin: 16PX;
@@ -404,7 +446,13 @@ background-color: #6feaf6;
 background-color: #FFF;
 }
 .container {
+display: flex;
+margin-bottom: 40px;
 perspective: 1000px;
+text-align:center;
+flex-direction: column;
+justify-content: center;
+align-items: center;
 }
 .container .screen {
 width: 200px;
@@ -448,13 +496,13 @@ color: #6feaf6;
 }
 .addcart a{
     float: right;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 .addcart:hover   {
     cursor:Pointer;
 }
 .paybutton{
-    margin: 10px 10px;
+    margin: 20px 10px;
     border:none;
     background-color: #5b5b6b;
     border-radius:15px;
@@ -466,6 +514,21 @@ color: #6feaf6;
 }
 .paybutton:hover   {
     cursor:Pointer;
+}
+
+/*--------------------- payment successful page ---------------------*/
+.booking-title{
+    text-align: center;
+    font-size: 35px;
+    color: #FFFFFF;
+}
+.movie_table{
+    text-align:left;
+    height:100%;
+    margin:auto;
+}
+.movie_table td { 
+    padding:10px 10px;
 }
 .confirm{
     align-items: center;

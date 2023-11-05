@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MZ Cinema</title>
+<title>MZ Cinema Movie Booking</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -67,7 +67,7 @@ for ($i=0; $i<$no_records_date; $i++) {
 //所有这个日期的时间
 if (!$getdate){
     if(!$getcinema){
-        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `date` = '".$default_date."' ORDER BY `time`";
+        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' AND `date` = '".$default_date."' ORDER BY `time`";
     }
     else{
         $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$default_date."' ORDER BY `time`";
@@ -76,7 +76,7 @@ if (!$getdate){
 }
 else{
     if(!$getcinema){
-        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `date` = '".$getdate."' ORDER BY `time`";
+        $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$default_cinema."' AND `date` = '".$getdate."' ORDER BY `time`";
     }
     else{
         $timequery = "SELECT DISTINCT `time` FROM `movsessions` WHERE `movie_id` = '".$getid."' AND `cinema_id` = '".$getcinema."' AND `date` = '".$getdate."' ORDER BY `time`";
@@ -195,20 +195,20 @@ $db->close();
         <a href="javascript:history.back(-1)"><— Back</a>
     </div>
     <div class="midView">
-        <div class="leftcolumn">
+        <div class="main-left">
             <div class="movie-poster">
                 <img class="booking-poster" alt="movie poster" src=".<?=$movieurl?>">
             </div>
         </div>
         <div class="main-right">
         <form id="bookingselection" method="post" action="">
+            <p class="movie-name-title"><a><?=$moviename?></a></p>
             <div class="movie_container">
-                <p class="movie-name"><a><?=$moviename?></a></p>
                 <input id="movie-page-card" name="movie-page-card" value="<?=$getid?>" style="display: none;"/>
                 <div class="booking-cinema-select">
                     <label for="movie-page-cinema">Cinema: </label>
                     <!-- <input id="movie-page-cinema" name="movie-page-cinema" value="" style="display: none;"/> -->
-                    <select name="movie-page-cinema" id="movie-page-cinema" value="<?=$getcinema?>" onchange="submitmovieForm('BookingPage.php',this.value,'','')">
+                    <select name="movie-page-cinema" id="movie-page-cinema" value="<?=$default_cinema?>" onchange="submitmovieForm('BookingPage.php',this.value,'','')">
                         <option value="1">Marina</option>
                         <option value="2">Downtown</option>
                         <option value="3">Boonlay</option>
@@ -217,20 +217,21 @@ $db->close();
                 <div class="booking-date-select">
                     <label for="movie-page-date">Date: </label>
                     <!-- <input id="movie-page-cinema" name="movie-page-cinema" value="" style="display: none;"/> -->
-                    <select name="movie-page-date" id="movie-page-date" value="<?=$getdate?>" onchange="submitmovieForm('BookingPage.php',<?=$getcinema?>,this.value,'')">
+                    <select name="movie-page-date" id="movie-page-date" value="<?=$default_date?>" onchange="submitmovieForm('BookingPage.php','<?=$getcinema?>',this.value,'')">
                         <?=$select_date?>
                     </select>
                 </div>
                 <div class="booking-time-select">
                     <label for="movie-page-time">Time: </label>
                     <!-- <input id="movie-page-cinema" name="movie-page-cinema" value="" style="display: none;"/> -->
-                    <select name="movie-page-time" id="movie-page-time" value="<?=$gettime?>" onchange="submitmovieForm('BookingPage.php',<?=$getcinema?>,'<?=$getdate?>',this.value)">
+                    <select name="movie-page-time" id="movie-page-time" value="<?=$default_time?>" onchange="submitmovieForm('BookingPage.php','<?=$getcinema?>','<?=$getdate?>',this.value)">
                         <?=$select_time?>
                     </select>
                 </div>
 
                 <script>
                     function submitmovieForm(action,cinema,date,time) {
+                        //alert('date');
                         document.getElementById("movie-page-cinema").value = cinema;
                         document.getElementById("movie-page-date").value = date;
                         document.getElementById("movie-page-time").value = time;
@@ -240,7 +241,7 @@ $db->close();
                 </script>
             </div>
 
-            <div>
+            <div class="caseblock">
                 <input id="movie" name="movie" value="<?=$price?>" style="display: none;"/>
                 <input id="seats" name="seats" value="" style="display: none;"/>
                 <input id="seatnum" name="seatnum" value="" style="display: none;"/>
@@ -259,20 +260,19 @@ $db->close();
                     </li>
                 </ul>
             </div>
-            
             <div class="container">
                 <div class="screen">
                 </div>
-            
+                <div class="seatblock">
                 <?=$seats?>
-        
+                </div>
             </div>
             <div>
                 <p>Your selected <span class="count">1</span> seats, totally S$ <span class="total">100</span></p>
             </div>
             <div class="proceed">
                 <div class="pay">
-                    <button class="paybutton" onclick="place_order('PaymentSuccessfulPage.php')">proceed to Pay</button>
+                    <button class="paybutton" onclick="place_order('PaymentSuccessfulPage.php')">Proceed to Pay</button>
                 </div>
                 <div class="addcart">
                     <a onclick="add_cart()"><img src="./img/cart.png" width="30" height="30"></a>
@@ -294,21 +294,24 @@ $db->close();
 </div>
 <script>
     if (<?php echo (isset($getcinema)) ? 1 : 0 ?>){
-        document.getElementById('movie-page-cinema').value = "<?= (int)$getcinema ?>";
+        document.getElementById('movie-page-cinema').value = "<?= $getcinema ?>";
     }
     else{
-        document.getElementById('movie-page-cinema').value = "<?= (int)$default_cinema?>";
+        document.getElementById('movie-page-cinema').value = "";
+        document.getElementById('movie-page-cinema').value = "<?= $default_cinema?>";
     }
     if (<?php echo (isset($getdate)) ? 1 : 0?>){
         document.getElementById('movie-page-date').value = "<?=$getdate?>";
     }
     else{
+        document.getElementById('movie-page-date').value = "";
         document.getElementById('movie-page-date').value = "<?=$default_date?>";
     }
     if (<?php echo (isset($gettime)) ? 1 : 0?>){
         document.getElementById('movie-page-time').value = "<?=$gettime?>";
     }
     else{
+        document.getElementById('movie-page-time').value = "";
         document.getElementById('movie-page-time').value = "<?=$default_time?>";
     }
 </script>

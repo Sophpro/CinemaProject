@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MZ Cinema</title>
+<title>MZ Cinema Movies</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="style.css">
 </head>
