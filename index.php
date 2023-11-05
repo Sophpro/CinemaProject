@@ -6,6 +6,14 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<script>
+    function clearSelection() {
+      document.getElementById('myName').value = "";
+      document.getElementById('myCinema').value = "Null";
+      document.getElementById('myDate').value = "";
+      document.getElementById('myGenre').value = "Null";
+    }
+</script>
 <div id="wrapper">
   <div class="top">
     <div class="logo">
@@ -13,12 +21,12 @@
     </div>
     <div class="document">
         <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="movies.php">Movies</a></li>
-            <li><a href="cinemas.php">Cinemas</a></li>
-            <li><a href="promotions.php">Promotions</a></li>
-            <li><a href="dining.php">Dining</a></li> 
-            <li><a href="mine.php">Mine</a></li>
+            <li><a href="index.php" class="active">Home</a></li>
+            <li><a href="MoviesPage.php">Movies</a></li>
+            <li><a href="CinemasPage.php">Cinemas</a></li>
+            <li><a href="PromotionPage.php">Promotions</a></li>
+            <li><a href="DiningPage.php">Dining</a></li> 
+            <li><a href="MinePage.php">Mine</a></li>
         </ul>
     </div>
     <div class="top-right">
@@ -28,7 +36,7 @@
         </div>
     </div>
     <div class="cart">
-        <a href="cart.php"><img src="./img/cart.png" width="40" height="40"></a>
+        <a href="CartPage.php"><img src="./img/cart.png" width="40" height="40"></a>
     </div>
     </div>
   </div>
@@ -48,7 +56,7 @@
       <div class="midView">
         <br>
         <div class="leftcolumn">
-            <form id='filterform' method="post" action="movies.php">
+            <form id='filterform' method="post" action="MoviesPage.php">
               <table border="0" align="center" id="filtertable">
                 <tr>
                   <th colspan="2" align="center">Filter</th>
@@ -67,7 +75,7 @@
                 </tr>
                 <tr>
                   <td>Date</td>
-                  <td align="center"><input type="date" name="mydate" id="myDate" min=""></td>
+                  <td align="center"><input type="date" name="mydate" id="myDate" min="<?=date('Y-m-d')?>"></td>
                 </tr>
                 <tr>
                   <td>Genre</td>
@@ -86,8 +94,8 @@
                       </select></td>
                 </tr>
                 <tr>
-                  <td align="center"><input type="reset" value="Clear"></td>
-                  <td align="center"><input type="submit" value="Search"></td>
+                  <td align="center"><button class="filterbutton" onclick="clearSelection()">Clear</button></td>
+                  <td align="center"><button class="filterbutton" type="submit">Search</button></td>
                 </tr>
               </table>
             </form>
@@ -97,6 +105,7 @@
           <div class="content">
             <?php
                 error_reporting(0);
+                date_default_timezone_set('Asia/Singapore');
                 @ $db = new mysqli('localhost', 'root', '', 'mzcinema');
                 if (mysqli_connect_errno()) {
                   echo "<br>Error: Could not connect to database. Please try again later.";
@@ -108,7 +117,7 @@
                 $no_records = $movies->num_rows;
                 for ($i=0; $i<$no_records; $i++) {
                     $row = $movies->fetch_assoc();
-                    $sessionquery = 'select DISTINCT `cinema_id`, `date` from `movsessions` where `movie_id` = "'.$row['id'].'" ORDER BY `date`';
+                    $sessionquery = 'select DISTINCT `cinema_id`, `date` from `movsessions` where `movie_id` = "'.$row['id'].'" and `date` >= "'.date('Y-m-d').'" ORDER BY `date`';
                     $sessions = $db->query($sessionquery);
                     $no_sessions = $sessions->num_rows;
                     $cinemas = 'Availabe Cinemas: ';
@@ -150,18 +159,26 @@
 
                     echo '
                         <div class="col-3">
-                            <div class="movie-card">
+                          <form id="movieform'.$row['id'].'" method="post" action="BookingPage.php">
+                            <input name="movie-card" value="'.$row['id'].'" style="display: none;"/>
+                            <div class="movie-card" onclick="submitmovieForm'.$row['id'].'()">
                                 <div class="movie-poster">
-                                    <a href="#"><img class="poster" alt="movie poster" src=".'.$row['picture_url'].'"></a>
+                                    <img class="poster" alt="movie poster" src=".'.$row['picture_url'].'">
                                 </div>
                                 <div class="short-details">
-                                    <p class="movie-name"><a href="#">'.$row['movie_name'].'</a></p>
+                                    <p class="movie-name"><a>'.$row['movie_name'].'</a></p>
                                     <p class="movie-description">'.$row['genre1'].', '.$row['genre2'].' | '.$row['runtime'].' | '.$row['language'].'</p>
                                     <p class="movie-description">'.$cinemas.'</p>
                                     <p class="movie-description">'.$dates.'</p>
                                 </div>
                             </div>
+                          </form>
                         </div>
+                        <script>
+                          function submitmovieForm'.$row['id'].'() {
+                            document.getElementById("movieform'.$row['id'].'").submit();
+                          }
+                        </script>
                     ';
                 }
               $db->close();

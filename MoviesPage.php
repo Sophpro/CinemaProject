@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MZ Cinema</title>
+<title>MZ Cinema Movies</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <script>
-    function clearSelection() {
+    function clearSelection() { //此处有1bug，从index page选择并进入movie page时不能clear
       document.getElementById('myName').value = "";
-      document.getElementById('myCinema').selectedIndex = 0;
+      document.getElementById('myCinema').value = "Null";
       document.getElementById('myDate').value = "";
-      document.getElementById('myGenre').selectedIndex = 0;
+      document.getElementById('myGenre').value = "Null";
     }
 </script>
 <div id="wrapper">
@@ -22,11 +22,11 @@
     <div class="document">
         <ul>
             <li><a href="index.php">Home</a></li>
-            <li><a href="#">Movies</a></li>
-            <li><a href="#">Cinemas</a></li>
-            <li><a href="#">Promotions</a></li>
-            <li><a href="#">Dining</a></li> 
-            <li><a href="#">Mine</a></li>
+            <li><a href="MoviesPage.php" class="active">Movies</a></li>
+            <li><a href="CinemasPage.php">Cinemas</a></li>
+            <li><a href="PromotionPage.php">Promotions</a></li>
+            <li><a href="DiningPage.php">Dining</a></li> 
+            <li><a href="MinePage.php">Mine</a></li>
         </ul>
     </div>
     <div class="top-right">
@@ -36,14 +36,14 @@
         </div>
     </div>
     <div class="cart">
-        <a href="#"><img src="./img/cart.png" width="40" height="40"></a>
+        <a href="CartPage.php"><img src="./img/cart.png" width="40" height="40"></a>
     </div>
     </div>
   </div>
   <div class="main">
       <div class="midView">
         <div class="leftcolumn">
-            <form id='filterform' method="post" action="movies.php">
+            <form id='filterform' method="post" action="MoviesPage.php">
               <table border="0" align="center" id="filtertable">
                 <tr>
                   <th colspan="2" align="center">Filter</th>
@@ -62,7 +62,7 @@
                 </tr>
                 <tr>
                   <td>Date</td>
-                  <td align="center"><input type="date" name="mydate" id="myDate" min="" value="<?php echo isset($_POST['mydate']) ? htmlspecialchars($_POST['mydate']) : ''; ?>"></td> <!-- 和casestudy一样不能选今天之前，tbc -->
+                  <td align="center"><input type="date" name="mydate" id="myDate" min="<?=date('Y-m-d')?>" value="<?php echo isset($_POST['mydate']) ? htmlspecialchars($_POST['mydate']) : ''; ?>"></td>
                 </tr>
                 <tr>
                   <td>Genre</td>
@@ -81,15 +81,16 @@
                       </select></td>
                 </tr>
                 <tr>
-                  <td align="center"><button type="button" onclick="clearSelection()">Clear</button></td>
-                  <td align="center"><input type="submit" value="Search"></td>
+                  <td align="center"><button class="filterbutton" onclick="clearSelection()">Clear</button></td>
+                  <td align="center"><button class="filterbutton" type="submit">Search</button></td>
                 </tr>
               </table>
             </form>
         </div>
         <div class="rightcolumn">
         <?php
-          //error_reporting(0);
+          error_reporting(0);
+          date_default_timezone_set('Asia/Singapore');
           $name=Null;
           $cinema=Null;
           $date=Null;
@@ -122,15 +123,15 @@
             if ($date || ($cinema != 'Null')){
               //有date，有cinema
               if ($date && ($cinema != 'Null')){
-                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `date` = "'.$date.'" and `cinema_id` = "'.$cinema.'" ORDER BY `movie_id`';
+                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `date` = "'.$date.'" and `cinema_id` = "'.$cinema.'" and `date` >= "'.date('Y-m-d').'" ORDER BY `movie_id`';
               }
               //有date，无cinema
               else if ($date && ($cinema == 'Null')){
-                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `date` = "'.$date.'" ORDER BY `movie_id`';
+                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `date` = "'.$date.'" and `date` >= "'.date('Y-m-d').'" ORDER BY `movie_id`';
               }
               //无date，有cinema
               else if (!$date && ($cinema != 'Null')){
-                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `cinema_id` = "'.$cinema.'" ORDER BY `movie_id`';
+                $prequery = 'select DISTINCT `movie_id` from `movsessions` where `cinema_id` = "'.$cinema.'" and `date` >= "'.date('Y-m-d').'" ORDER BY `movie_id`';
               }
               $premovies = $db->query($prequery);
               $pre_no_records = $premovies->num_rows;
@@ -194,12 +195,12 @@
           }
                 for ($i=0; $i<$no_records; $i++) {
                     $row = $movies->fetch_assoc();
-                    $sessionquery = 'select DISTINCT `cinema_id`, `date`, `time` from `movsessions` where `movie_id` = "'.$row['id'].'" ORDER BY `date`';
+                    $sessionquery = 'select DISTINCT `cinema_id`, `date`, `time` from `movsessions` where `movie_id` = "'.$row['id'].'" and `date` >= "'.date('Y-m-d').'" ORDER BY `date`';
                     $sessions = $db->query($sessionquery);
                     $no_sessions = $sessions->num_rows;
                     $cinemas = 'Availabe Cinemas: ';
                     $dates = 'Availabe Dates: ';
-                    $cinematable = '<tr style="background:#ffffff" id="select_row'; //只显示有场次的cinema？tbc...
+                    $cinematable = '<tr style="background:#ffffff" id="select_row';
                     $table1 = '<tr><th colspan="100">Date and time choices at MZ Marina</th></tr>';
                     $table2 = '<tr><th colspan="100">Date and time choices at MZ Downtown</th></tr>';
                     $table3 = '<tr><th colspan="100">Date and time choices at MZ Boonlay</th></tr>';
@@ -221,19 +222,19 @@
                             if (substr($table1, strpos($table1, '</th></tr>')) === '</th></tr>'){
                               $table1=$table1.'<tr><td>'.$session['date'].'</td>';
                               if (strpos($table1, $session['time']) === false){
-                                $table1=$table1.'<td>'.$session['time'].'</td>';
+                                $table1=$table1.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                               }
                             }
                             else{
                               $table1=$table1.'</tr><tr><td>'.$session['date'].'</td>';
                               if (strpos($table1, $session['time']) === false){
-                                $table1=$table1.'<td>'.$session['time'].'</td>';
+                                $table1=$table1.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                               }
                             }
                           }
                           //如果这个date已经出现过，因为按date排序，所以这个time一定是同一天，直接加在后面
                           else if (strpos($table1, $session['time']) === false){
-                            $table1=$table1.'<td>'.$session['time'].'</td>';
+                            $table1=$table1.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                           }
                           break;
                         case '2':
@@ -246,18 +247,18 @@
                             if (substr($table2, strpos($table2, '</th></tr>')) === '</th></tr>'){
                               $table2=$table2.'<tr><td>'.$session['date'].'</td>';
                               if (strpos($table2, $session['time']) === false){
-                                $table2=$table2.'<td>'.$session['time'].'</td>';
+                                $table2=$table2.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                               }
                             }
                             else{
                               $table2=$table2.'</tr><tr><td>'.$session['date'].'</td>';
                               if (strpos($table2, $session['time']) === false){
-                                $table2=$table2.'<td>'.$session['time'].'</td>';
+                                $table2=$table2.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                               }
                             }
                           }
                           else if (strpos($table2, $session['time']) === false){
-                            $table2=$table2.'<td>'.$session['time'].'</td>';
+                            $table2=$table2.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                           }
                           break;
                         case '3':
@@ -270,18 +271,18 @@
                               if (substr($table3, strpos($table3, '</th></tr>')) === '</th></tr>'){
                                 $table3=$table3.'<tr><td>'.$session['date'].'</td>';
                                 if (strpos($table3, $session['time']) === false){
-                                  $table3=$table3.'<td>'.$session['time'].'</td>';
+                                  $table3=$table3.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                                 }
                               }
                               else{
                                 $table3=$table3.'</tr><tr><td>'.$session['date'].'</td>';
                                 if (strpos($table3, $session['time']) === false){
-                                  $table3=$table3.'<td>'.$session['time'].'</td>';
+                                  $table3=$table3.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                                 }
                               }
                             }
                             else if (strpos($table3, $session['time']) === false){
-                              $table3=$table3.'<td>'.$session['time'].'</td>';
+                              $table3=$table3.'<td class="time_selected" onclick="submitmovieForm'.$row['id'].'('."'".$session['cinema_id']."','".$session['date']."','".$session['time']."'".')">'.$session['time'].'</td>';
                             }
                           break;
                         default:
@@ -297,6 +298,11 @@
                     
                     echo '
                         <div class="col-1">
+                        <form id="movieform'.$row['id'].'" method="post" action="BookingPage.php">
+                        <input name="movie-page-card" value="'.$row['id'].'" style="display: none;"/>
+                        <input id="movie-page-cinema-'.$row['id'].'" name="movie-page-cinema" value="" style="display: none;"/>
+                        <input id="movie-page-date-'.$row['id'].'" name="movie-page-date" value="" style="display: none;"/>
+                        <input id="movie-page-time-'.$row['id'].'" name="movie-page-time" value="" style="display: none;"/>
                             <div class="movie-card-hori">
                                 <div class="movie-poster-left">
                                     <img class="poster-left" alt="movie poster" src=".'.$row['picture_url'].'">
@@ -393,49 +399,55 @@
                     }
                     
                     echo '
-                                        
+                            </form>            
                               <script>
-                              function showTable_'.$row['id'].'(tableid){
-                                var selected = document.getElementById(tableid);
-                                var cinema1 = document.getElementById("tableMZMarina_'.$row['id'].'");
-                                var cinema2 = document.getElementById("tableMZDowntown_'.$row['id'].'");
-                                var cinema3 = document.getElementById("tableMZBoonlay_'.$row['id'].'");
-                                var row1 = document.getElementById("select_row1_'.$row['id'].'");
-                                var row2 = document.getElementById("select_row2_'.$row['id'].'");
-                                var row3 = document.getElementById("select_row3_'.$row['id'].'");
-                                if(selected.value=="MZ Marina"){
-                                  cinema1.style.display = "inline";
-                                  cinema2.style.display = "none";
-                                  cinema3.style.display = "none";
-                                  row1.style.background = "#ffffff";
-                                  row2.style.background = "#bbbbce";
-                                  row3.style.background = "#bbbbce";
-                                }
-                                else if (selected.value=="MZ Downtown"){
-                                  cinema2.style.display = "inline";
-                                  cinema1.style.display = "none";
-                                  cinema3.style.display = "none";	
-                                  row2.style.background = "#ffffff";
-                                  row1.style.background = "#bbbbce";
-                                  row3.style.background = "#bbbbce";	
-                                }
-                                else if (selected.value=="MZ Boonlay"){
-                                  cinema3.style.display = "inline";
-                                  cinema1.style.display = "none";
-                                  cinema2.style.display = "none";	
-                                  row3.style.background = "#ffffff";
-                                  row1.style.background = "#bbbbce";
-                                  row2.style.background = "#bbbbce";	
-                                }
-                                else{
-                                  cinema1.style.display = "inline";
-                                  cinema2.style.display = "none";
-                                  cinema3.style.display = "none";	
-                                  row1.style.background = "#ffffff";
-                                  row2.style.background = "#bbbbce";
-                                  row3.style.background = "#bbbbce";
-                                }
-                              }
+                                  function showTable_'.$row['id'].'(tableid){
+                                    var selected = document.getElementById(tableid);
+                                    var cinema1 = document.getElementById("tableMZMarina_'.$row['id'].'");
+                                    var cinema2 = document.getElementById("tableMZDowntown_'.$row['id'].'");
+                                    var cinema3 = document.getElementById("tableMZBoonlay_'.$row['id'].'");
+                                    var row1 = document.getElementById("select_row1_'.$row['id'].'");
+                                    var row2 = document.getElementById("select_row2_'.$row['id'].'");
+                                    var row3 = document.getElementById("select_row3_'.$row['id'].'");
+                                    if(selected.value=="MZ Marina"){
+                                      cinema1.style.display = "inline";
+                                      cinema2.style.display = "none";
+                                      cinema3.style.display = "none";
+                                      row1.style.background = "#ffffff";
+                                      row2.style.background = "#bbbbce";
+                                      row3.style.background = "#bbbbce";
+                                    }
+                                    else if (selected.value=="MZ Downtown"){
+                                      cinema2.style.display = "inline";
+                                      cinema1.style.display = "none";
+                                      cinema3.style.display = "none";	
+                                      row2.style.background = "#ffffff";
+                                      row1.style.background = "#bbbbce";
+                                      row3.style.background = "#bbbbce";	
+                                    }
+                                    else if (selected.value=="MZ Boonlay"){
+                                      cinema3.style.display = "inline";
+                                      cinema1.style.display = "none";
+                                      cinema2.style.display = "none";	
+                                      row3.style.background = "#ffffff";
+                                      row1.style.background = "#bbbbce";
+                                      row2.style.background = "#bbbbce";	
+                                    }
+                                    else{
+                                      cinema1.style.display = "inline";
+                                      cinema2.style.display = "none";
+                                      cinema3.style.display = "none";	
+                                      row1.style.background = "#ffffff";
+                                      row2.style.background = "#bbbbce";
+                                      row3.style.background = "#bbbbce";
+                                    }
+                                  }
+                                  function submitmovieForm'.$row['id'].'(cinema, date, time) {
+                                    document.getElementById("movie-page-cinema-'.$row['id'].'").value = cinema;
+                                    document.getElementById("movie-page-date-'.$row['id'].'").value = date;
+                                    document.getElementById("movie-page-time-'.$row['id'].'").value = time;
+                                    document.getElementById("movieform'.$row['id'].'").submit();
+                                  }
                               </script>
                         </div>
                     ';
